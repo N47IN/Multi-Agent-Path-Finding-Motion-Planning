@@ -2,6 +2,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.path as mplPath
 from scipy.spatial import KDTree
+import cv2
+
+def readMap():
+    img = cv2.imread("Maps/mapya.png")
+    image_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    r_channel, g_channel, b_channel = cv2.split(image_rgb)
+    r_thresh = 200
+    g_thresh = 100
+    b_thresh = 70
+    r_threshed = cv2.threshold(r_channel, r_thresh, 255, cv2.THRESH_BINARY)[1]
+    g_threshed = cv2.threshold(g_channel, g_thresh, 255, cv2.THRESH_BINARY)[1]
+    b_threshed = cv2.threshold(b_channel, b_thresh, 255, cv2.THRESH_BINARY)[1]
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+    binaryMask = cv2.morphologyEx(b_threshed, cv2.MORPH_CLOSE, kernel)
+    cv2.imwrite("Binary_Mask.png", binaryMask)
+    #cv2.waitKey(0)
+    return binaryMask
+def setStart(x,y):
+    x_len = shape[0] - x/10*shape[0]
+    y_len = shape[1] - y/10*shape[1]
+    k = cv2.circle(image,(int(x_len), int(y_len)), 10, (0,255,0), -1)
+    cv2.imshow("square_circle_opencv.jpg", k)
+    cv2.waitKey(0)
 
 
 class Node:
@@ -62,6 +85,7 @@ def RRT(start, goal,radius = 0.5):
         curr_node = node_list[new_parent_index]
         node_list.append(generate_node(curr_node,radius))
 
-map = Map()
-start = (1,1)
-goal = (9,8)
+readMap()
+image = cv2.imread("Binary_Mask.png")
+shape = image.shape
+setStart(5,5)
