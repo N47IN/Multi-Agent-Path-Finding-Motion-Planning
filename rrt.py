@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.path as mplPath
 from scipy.spatial import KDTree
 import cv2
+import random
 
 def readMap():
     img = cv2.imread("Maps/mapya.png")
@@ -19,11 +20,26 @@ def readMap():
     cv2.imwrite("Binary_Mask.png", binaryMask)
     #cv2.waitKey(0)
     return binaryMask
-def setStart(x,y):
-    x_len = shape[0] - x/10*shape[0]
-    y_len = shape[1] - y/10*shape[1]
-    k = cv2.circle(image,(int(x_len), int(y_len)), 10, (0,255,0), -1)
-    cv2.imshow("square_circle_opencv.jpg", k)
+
+# cartesian to pixel
+def ctop(point):
+    x = shape[0] - point[0]/10*shape[0] 
+    y = shape[1] - point[1]/10*shape[1]
+    return x,y 
+
+def displayPoints(Nodes,image):
+    x_len = [shape[0] - a.x/10*shape[0] for a in Nodes]
+    y_len = [shape[1] - a.y/10*shape[1] for a in Nodes]
+    for i in range(len(x_len)):
+        image = cv2.circle(image,(int(x_len[i]), int(y_len[i])), 10, (0,255,0), -1)
+    cv2.imshow("square_circle_opencv.jpg", image)
+    cv2.waitKey(500)
+
+def displayGoal(goal,start,image):
+    
+    image = cv2.circle(image,(int(goal[0]), int(goal[1])), 10, (0,0,255), -1)
+    image = cv2.circle(image,(int(start[0]), int(start[1])), 10, (255,0,0), -1)
+    cv2.imshow("square_circle_opencv.jpg", image)
     cv2.waitKey(0)
 
 
@@ -48,23 +64,24 @@ class Map:
     def __init__(self):
         self.x_size = 10
         self.y_size = 10
-        self.obstacles = [Object((3,3),1,4), Object((7,4),2,6),Object((4,6),3,3)]
+        self.goal = []
 
-def collision_check(x,y,x_new,y_new,map):
+def collision_check(x,y,x_new,y_new):
+    x,y = ctop([x,y])
+    x_new , y_new = ctop([x_new,y_new])
     line_x = np.arange(x,x_new,0.05)
     line_y = y + (line_x - x)*(y_new - y)/(x_new - x)
     collision = False
-    for obj in map.obstacles:
-        if obj.contains_point((x_new,y_new)):
+
+    for i in range(len(line_x)):
+        if image[line_x[i],line_y[i]] == [0,0,0]:
             collision = True
             break
-        if True in obj.contains_points(zip(line_x,line_y)):
-            collision = True
-            break
+
     return collision
 
 def generate_node(parent,radius):
-    angle = np.pi*(np.random() - 1)
+    angle = np.pi*(random.uniform(0,2))
     x_new = parent.x + radius*np.cos(angle)
     y_new = parent.x + radius*np.sin(angle)
     return Node(x_new,y_new,parent)
@@ -75,17 +92,29 @@ def goal_check(node, goal, goal_threshold = 0.01):
     else:
         return False
 
-def RRT(start, goal,radius = 0.5):
+def RRT(start, goal,image,radius = 0.5):
     node_list = []
-    node_list.append(start)
+    
     curr_node = Node(start[0],start[1],parent=None)
+    node_list.append(curr_node)
     while not(goal_check(curr_node,goal)):
         tree = KDTree([(node.x,node.y) for node in node_list])
         _, new_parent_index = tree.query(goal)
         curr_node = node_list[new_parent_index]
-        node_list.append(generate_node(curr_node,radius))
+        child = generate_node(curr_node,radius)
+        Xp,Yp = ctop([child.x,child.y])
+        if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
+            pass
+        elif Xp < 0 or Yp < 0:
+            pass
+        else:
+            node_list.append(child)
+        displayPoints(node_list,image)
+
 
 readMap()
 image = cv2.imread("Binary_Mask.png")
 shape = image.shape
-setStart(5,5)
+start = [0.3,0.3]
+goal = [6,7]
+RRT(start,goal,image)
