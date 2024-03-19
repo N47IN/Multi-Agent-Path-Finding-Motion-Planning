@@ -75,7 +75,7 @@ def collision_check(x,y,x_new,y_new):
     collision = False
     print(image[x_new-1,y_new-1])
     for i in range(len(line_x)):
-        if any(image[line_x[i],line_y[i]] == [0,0,0]):
+        if all(image[line_x[i],line_y[i]] == [0,0,0]):
             collision = True
             print(collision)
             break
@@ -88,7 +88,7 @@ def generate_node(parent,radius):
     y_new = max(min(parent.x + radius*np.sin(angle),10), 0)
     return Node(x_new,y_new,parent)
 
-def goal_check(node, goal, goal_threshold = 0.01):
+def goal_check(node, goal, goal_threshold = 0.1):
     if np.sqrt((goal[1] - node.y)**2 + (goal[0] - node.x)**2) < goal_threshold:
         return True
     else:
