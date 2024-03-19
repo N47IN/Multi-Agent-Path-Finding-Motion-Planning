@@ -23,8 +23,8 @@ def readMap():
 
 # cartesian to pixel
 def ctop(point):
-    x = shape[0] - point[0]/10*shape[0] 
-    y = shape[1] - point[1]/10*shape[1]
+    x = int(shape[0] - point[0]/10*shape[0])
+    y = int(shape[1] - point[1]/10*shape[1])
     return x,y 
 
 def displayPoints(Nodes,image):
@@ -69,21 +69,23 @@ class Map:
 def collision_check(x,y,x_new,y_new):
     x,y = ctop([x,y])
     x_new , y_new = ctop([x_new,y_new])
-    line_x = np.arange(x,x_new,0.05)
+    line_x = np.arange(x,x_new)
     line_y = y + (line_x - x)*(y_new - y)/(x_new - x)
+    line_y = [int(x) for x in line_y]
     collision = False
-
+    print(image[x_new-1,y_new-1])
     for i in range(len(line_x)):
-        if image[line_x[i],line_y[i]] == [0,0,0]:
+        if any(image[line_x[i],line_y[i]] == [0,0,0]):
             collision = True
+            print(collision)
             break
 
     return collision
 
 def generate_node(parent,radius):
     angle = np.pi*(random.uniform(0,2))
-    x_new = parent.x + radius*np.cos(angle)
-    y_new = parent.x + radius*np.sin(angle)
+    x_new = max(min(parent.x + radius*np.cos(angle),10), 0)
+    y_new = max(min(parent.x + radius*np.sin(angle),10), 0)
     return Node(x_new,y_new,parent)
 
 def goal_check(node, goal, goal_threshold = 0.01):
@@ -92,7 +94,7 @@ def goal_check(node, goal, goal_threshold = 0.01):
     else:
         return False
 
-def RRT(start, goal,image,radius = 0.5):
+def RRT(start, goal,image,radius = 1):
     node_list = []
     
     curr_node = Node(start[0],start[1],parent=None)
@@ -101,20 +103,22 @@ def RRT(start, goal,image,radius = 0.5):
         tree = KDTree([(node.x,node.y) for node in node_list])
         _, new_parent_index = tree.query(goal)
         curr_node = node_list[new_parent_index]
+        radius = min(1, 0.5*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
         child = generate_node(curr_node,radius)
         Xp,Yp = ctop([child.x,child.y])
         if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
-            pass
+            continue
         elif Xp < 0 or Yp < 0:
-            pass
+            continue
         else:
             node_list.append(child)
         displayPoints(node_list,image)
 
 
+
 readMap()
 image = cv2.imread("Binary_Mask.png")
-shape = image.shape
+shape = image.shape[:2]
 start = [0.3,0.3]
 goal = [6,7]
 RRT(start,goal,image)
