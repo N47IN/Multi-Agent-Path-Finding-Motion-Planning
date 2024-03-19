@@ -6,15 +6,18 @@ import cv2
 import random
 
 def readMap():
+    # Read Map 
     img = cv2.imread("Maps/mapya.png")
     image_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     r_channel, g_channel, b_channel = cv2.split(image_rgb)
     r_thresh = 200
     g_thresh = 100
     b_thresh = 70
+    # consider blue channel since b_brown = 0
     r_threshed = cv2.threshold(r_channel, r_thresh, 255, cv2.THRESH_BINARY)[1]
     g_threshed = cv2.threshold(g_channel, g_thresh, 255, cv2.THRESH_BINARY)[1]
     b_threshed = cv2.threshold(b_channel, b_thresh, 255, cv2.THRESH_BINARY)[1]
+    # Denoise to remove grains
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
     binaryMask = cv2.morphologyEx(b_threshed, cv2.MORPH_CLOSE, kernel)
     cv2.imwrite("Binary_Mask.png", binaryMask)
@@ -30,35 +33,24 @@ def ctop(point):
 def displayPoints(Nodes,image):
     x_len = [shape[0] - a.x/10*shape[0] for a in Nodes]
     y_len = [shape[1] - a.y/10*shape[1] for a in Nodes]
+    cv2.imwrite("Image.png",image)
+    image1 = cv2.imread("Image.png")
     for i in range(len(x_len)):
-        image = cv2.circle(image,(int(x_len[i]), int(y_len[i])), 10, (0,255,0), -1)
-    cv2.imshow("square_circle_opencv.jpg", image)
+        image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 5, (0,255,0), -1)
+    cv2.imshow("Nodes", image1)
     cv2.waitKey(500)
 
-def displayGoal(goal,start,image):
-    
+""" def displayGoal(goal,start,image):
     image = cv2.circle(image,(int(goal[0]), int(goal[1])), 10, (0,0,255), -1)
     image = cv2.circle(image,(int(start[0]), int(start[1])), 10, (255,0,0), -1)
     cv2.imshow("square_circle_opencv.jpg", image)
-    cv2.waitKey(0)
-
+    cv2.waitKey(0) """
 
 class Node:
     def __init__(self,x,y, parent):
         self.x = x
         self.y = y
         self.parent = parent
-
-class Object:
-    def __init__(self,centroid = (2,2), radius = 3, num_edges = 4):
-        self.centroid = centroid
-        self.num_edges = num_edges
-        self.radius = radius
-        self.vertices = []
-        for i in range(self.num_edges):
-            theta = (np.random() - 1)*np.pi
-            self.vertices.append((self.centroid[0] + self.radius*np.cos(theta), self.centroid[1] + self.radius*np.sin(theta)))
-        self.path = mplPath.Path(self.vertices)
 
 class Map:
     def __init__(self):
@@ -69,23 +61,26 @@ class Map:
 def collision_check(x,y,x_new,y_new):
     x,y = ctop([x,y])
     x_new , y_new = ctop([x_new,y_new])
-    line_x = np.arange(x,x_new)
+    line_x = np.arange(x,x_new,0.05)
     line_y = y + (line_x - x)*(y_new - y)/(x_new - x)
     line_y = [int(x) for x in line_y]
     collision = False
+    image1 = cv2.imread("Image.png")
     print(image[x_new-1,y_new-1])
-    for i in range(len(line_x)):
-        if all(image[line_x[i],line_y[i]] == [0,0,0]):
+    for i in range(len(line_x)-2):
+        if all(image[int(line_x[i]),line_y[i]] == [0,0,0]):
             collision = True
+            image1 = cv2.circle(image1,(int(line_x[i]), line_y[i]), 5, (0,255,0), -1)
+            cv2.imshow("hii",image1)
+            cv2.waitKey(5000)
             print(collision)
             break
-
     return collision
 
 def generate_node(parent,radius):
-    angle = np.pi*(random.uniform(0,2))
+    angle = np.pi*(np.random.random() * 2)
     x_new = max(min(parent.x + radius*np.cos(angle),10), 0)
-    y_new = max(min(parent.x + radius*np.sin(angle),10), 0)
+    y_new = max(min(parent.y + radius*np.sin(angle),10), 0)
     return Node(x_new,y_new,parent)
 
 def goal_check(node, goal, goal_threshold = 0.1):
@@ -96,23 +91,24 @@ def goal_check(node, goal, goal_threshold = 0.1):
 
 def RRT(start, goal,image,radius = 1):
     node_list = []
-    
     curr_node = Node(start[0],start[1],parent=None)
     node_list.append(curr_node)
     while not(goal_check(curr_node,goal)):
         tree = KDTree([(node.x,node.y) for node in node_list])
         _, new_parent_index = tree.query(goal)
         curr_node = node_list[new_parent_index]
-        radius = min(1, 0.5*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
+        radius = min(0.5, 0.5*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
+        #radius = 1.25
         child = generate_node(curr_node,radius)
         Xp,Yp = ctop([child.x,child.y])
         if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
             continue
-        elif Xp < 0 or Yp < 0:
+        elif Xp < 0 or Yp < 0 :
             continue
         else:
             node_list.append(child)
         displayPoints(node_list,image)
+    print("Found Goal")
 
 
 
