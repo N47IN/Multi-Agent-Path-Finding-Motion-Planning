@@ -18,7 +18,6 @@ def readMap():
     g_threshed = cv2.threshold(g_channel, g_thresh, 255, cv2.THRESH_BINARY)[1]
     b_threshed = cv2.threshold(b_channel, b_thresh, 255, cv2.THRESH_BINARY)[1]
     # Denoise to remove grains
-    #image1 = cv2.circle(image1,(int(goal[i]), int(goal[1])), 5, (0,255,0), -1)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
     binaryMask = cv2.morphologyEx(b_threshed, cv2.MORPH_CLOSE, kernel)
     cv2.imwrite("Binary_Mask.png", binaryMask)
@@ -27,8 +26,8 @@ def readMap():
 
 # cartesian to pixel
 def ctop(point):
-    x = min(shape[0]-1,int(shape[0] - point[0]/10*shape[0]))
-    y = min(shape[1]-1,int(shape[1] - point[1]/10*shape[1]))
+    x = int(shape[0] - point[0]/10*shape[0])
+    y = int(shape[1] - point[1]/10*shape[1])
     return x,y 
 
 def displayPoints(Nodes,image):
@@ -37,7 +36,7 @@ def displayPoints(Nodes,image):
     cv2.imwrite("Image.png",image)
     image1 = cv2.imread("Image.png")
     for i in range(len(x_len)):
-        image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 5, (0,255,0), -1)
+        image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 2, (0,255,0), -1)
     cv2.imshow("Nodes", image1)
     cv2.waitKey(500)
 
@@ -62,30 +61,33 @@ class Map:
 def collision_check(x,y,x_new,y_new):
     x,y = ctop([x,y])
     x_new , y_new = ctop([x_new,y_new])
-    line_x = np.arange(x,x_new,0.0005)
-    line_y = y + (line_x - x)*(y_new - y)/(x_new - x)
-    collision = False
-    for i in range(len(line_x)):
-        if any(image[int(line_x[i]),int(line_y[i])] == 0)  :
-            print("collido")
-            collision = True
-            return collision
-        
-    if any(image[x_new,y_new]) ==[0,0,0]:
-            print("collido")
-            collision = True
-            return collision
-            
-    print(image[x_new,y_new])
-    return collision
-    
+
+    height, width, _=image.shape
+
+    if x_new >= width or y_new >= height or x_new < 0 or y_new < 0:
+        print("out of bounds")
+        return True
+
+    if (image[int(x_new), int(y_new)]==[0,0,0]).all():
+        print("invalid point")
+        return True
+
+    line_x = np.linspace(x,x_new,abs(x-x_new-1))
+    line_y=[]
+    for x_pt in line_x:
+        line_y.append(y + (x_pt - x)*(y_new - y)/(x_new - x))
+
+    for i in range(len(line_x)-1):
+        if (image[int(line_x[i]),int(line_y[i])] == [0,0,0]).all():
+            print("collision")
+            return True
+    print("valid point")
+    return False
 
 def generate_node(parent,radius):
     angle = np.pi*(np.random.random() * 2)
     x_new = max(min(parent.x + radius*np.cos(angle),10), 0)
     y_new = max(min(parent.y + radius*np.sin(angle),10), 0)
-    xn, yn = ctop([x_new,y_new])
-    print(xn,yn)
     return Node(x_new,y_new,parent)
 
 def goal_check(node, goal, goal_threshold = 0.1):
@@ -102,12 +104,11 @@ def RRT(start, goal,image,radius = 1):
         tree = KDTree([(node.x,node.y) for node in node_list])
         _, new_parent_index = tree.query(goal)
         curr_node = node_list[new_parent_index]
-        radius = min(1.25, 0.5*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
-        #radius = 1.25
+        #radius = min(0.75, 0.75*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
+        radius = 1
         child = generate_node(curr_node,radius)
         Xp,Yp = ctop([child.x,child.y])
         if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
-            print("collido")
             continue
         elif Xp < 0 or Yp < 0 :
             continue
@@ -121,7 +122,8 @@ def RRT(start, goal,image,radius = 1):
 readMap()
 image = cv2.imread("Binary_Mask.png")
 shape = image.shape[:2]
-print(shape)
 start = [0.3,0.3]
+#start_point = cv2.circle(image, (start[0], start[1]), 2, (0, 0, 255), -1)
+
 goal = [6,7]
 RRT(start,goal,image)
