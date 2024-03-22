@@ -123,7 +123,6 @@ def RRT(node_list,goal,image,radius = 0.3, goal_bias = 0.05):
     displayPoints(node_list,image)
     return node_list
 
-
 # def RRT_explore(node_list,goal,image,radius = 1):
 #         print("EXPLORING")
 #         curr_node = node_list[-1]
