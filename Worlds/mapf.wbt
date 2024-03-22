@@ -1,12 +1,13 @@
 #VRML_SIM R2023b utf8
 
-EXTERNPROTO "webots://projects/objects/backgrounds/protos/TexturedBackground.proto"
-EXTERNPROTO "webots://projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
-EXTERNPROTO "webots://projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "webots://projects/appearances/protos/ThreadMetalPlate.proto"
-EXTERNPROTO "webots://projects/appearances/protos/Roughcast.proto"
-EXTERNPROTO "webots://projects/objects/factory/containers/protos/WoodenBox.proto"
-EXTERNPROTO "webots://projects/robots/robotis/turtlebot/protos/TurtleBot3Burger.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/ThreadMetalPlate.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Roughcast.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/robotis/turtlebot/protos/TurtleBot3Burger.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3at.proto"
 
 WorldInfo {
   info [
@@ -16,8 +17,8 @@ WorldInfo {
   title "Spot Robot demo"
 }
 Viewpoint {
-  orientation -0.5773117806178615 0.5831139412535772 0.571567353402514 2.0944577339014474
-  position 0.04596862925082168 0.23153706693983978 24.882865053849788
+  orientation -0.4995888226977374 0.08853728782088127 0.8617262656440333 2.838509251740397
+  position 12.89227050925288 -6.443994845577498 24.703600379484225
   followType "None"
   followSmoothness 0
 }
@@ -62,284 +63,297 @@ RectangleArena {
   }
 }
 WoodenBox {
-  translation -0.181428 -0.912043 0.3
+  translation 0.821339 4.12919 0.3
   rotation 0 0 -1 0.19635
 }
 WoodenBox {
-  translation -0.302388 -1.52017 0.3
+  translation 0.239941 1.20589 0.3
   rotation 0 0 -1 0.19635
-  name "wooden box(7)"
-}
-WoodenBox {
-  translation 0.25666 -1.63135 0.3
-  rotation 0 0 -1 0.19635
-  name "wooden box(8)"
-}
-WoodenBox {
-  translation 0.724224 -2.40739 0.3
-  rotation 0 0 -1 0.19635
-  name "wooden box(11)"
-}
-WoodenBox {
-  translation -0.788984 -3.19741 0.3
-  rotation 0 0 -1 0.19635
-  name "wooden box(20)"
-}
-WoodenBox {
-  translation 1.83548 1.94797 0.3
-  rotation 0 0 1 0.0654494
-  name "wooden box(1)"
-}
-WoodenBox {
-  translation -1.85837 1.88618 0.9
-  rotation 0 0 1 0.0654494
   name "wooden box(2)"
 }
 WoodenBox {
-  translation -1.74 0.0800718 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(3)"
-}
-WoodenBox {
-  translation -2.73844 -1.0476 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(12)"
-}
-WoodenBox {
-  translation -4.03576 -1.13253 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(31)"
-}
-WoodenBox {
-  translation -4.07438 -0.543795 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(32)"
-}
-WoodenBox {
-  translation -3.18441 1.16809 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(33)"
-}
-WoodenBox {
-  translation 3.51121 1.6069 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(34)"
-}
-WoodenBox {
-  translation 3.67471 -0.887731 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(35)"
-}
-WoodenBox {
-  translation -0.0436288 0.191253 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(13)"
-}
-WoodenBox {
-  translation -0.296076 4.04305 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(21)"
-}
-WoodenBox {
-  translation 3.20646 4.2726 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(22)"
-}
-WoodenBox {
-  translation 3.82643 3.68185 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(25)"
-}
-WoodenBox {
-  translation -1.81287 3.94368 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(23)"
-}
-WoodenBox {
-  translation -3.83259 -3.92536 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(14)"
-}
-WoodenBox {
-  translation 2.02222 -4.11289 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(19)"
-}
-WoodenBox {
-  translation 2.64098 -4.07238 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(26)"
-}
-WoodenBox {
-  translation 2.6037 -3.50359 0.9
-  rotation 0 0 1 0.0654494
+  translation 0.542346 2.72641 0.3
+  rotation 0 0 -1 0.19635
   name "wooden box(27)"
 }
 WoodenBox {
-  translation 3.11267 -3.47027 0.9
-  rotation 0 0 1 0.0654494
+  translation 1.09161 2.61721 0.3
+  rotation 0 0 -1 0.19635
   name "wooden box(28)"
 }
 WoodenBox {
-  translation 3.77131 -3.42712 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(29)"
+  translation 0.0136296 0.0681277 0.3
+  rotation 0 0 -1 0.19635
+  name "wooden box(22)"
 }
 WoodenBox {
-  translation 3.73274 -2.83837 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(30)"
+  translation 0.592299 -0.0469755 0.3
+  rotation 0 0 -1 0.19635
+  name "wooden box(23)"
 }
 WoodenBox {
-  translation -2.0674 -2.41667 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(15)"
-}
-WoodenBox {
-  translation -2.63623 -2.45392 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(16)"
-}
-WoodenBox {
-  translation -2.99188 2.97454 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(17)"
-}
-WoodenBox {
-  translation -2.5122 2.38471 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(18)"
-}
-WoodenBox {
-  translation -0.00235058 2.00784 0.9
-  rotation 0 0 1 0.0654494
+  translation 2.52518 0.751323 0.3
+  rotation 0 0 -1 -0.06544530717958619
   name "wooden box(4)"
 }
 WoodenBox {
-  translation -0.0422466 2.6166 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(9)"
+  translation 2.86159 2.95818 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(29)"
 }
 WoodenBox {
-  translation 2.15115 0.495421 0.9
-  rotation 0 0 1 0.0654494
+  translation 3.41049 2.99418 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(30)"
+}
+WoodenBox {
+  translation 3.37581 3.52311 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(31)"
+}
+Pioneer3at {
+  translation -4.63 4.67 0
+  name "Admin"
+  controller "admin"
+  extensionSlot [
+    Emitter {
+    }
+    Receiver {
+      name "receiver_agent2"
+      channel 2
+    }
+    Receiver {
+      name "receiver_agent3"
+      channel 3
+    }
+    Receiver {
+      name "receiver_agent1"
+      channel 1
+    }
+  ]
+}
+WoodenBox {
+  translation -1.60604 0.480567 0.3
+  rotation 0 0 -1 -0.06544530717958619
   name "wooden box(5)"
 }
 WoodenBox {
-  translation 1.56243 0.456835 0.9
-  rotation 0 0 1 0.0654494
-  name "wooden box(10)"
+  translation -1.64202 1.02939 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(21)"
 }
 WoodenBox {
-  translation 2.19235 -0.133231 0.9
-  rotation 0 0 1 0.0654494
+  translation -2.93057 1.72669 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(34)"
+}
+WoodenBox {
+  translation -1.64202 1.02939 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(35)"
+}
+WoodenBox {
+  translation -1.75262 2.716 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(24)"
+}
+WoodenBox {
+  translation -1.78729 3.24494 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(25)"
+}
+WoodenBox {
+  translation -3.66335 3.12193 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(32)"
+}
+WoodenBox {
+  translation -3.69869 3.66085 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(33)"
+}
+WoodenBox {
+  translation -1.27834 3.27832 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(26)"
+}
+WoodenBox {
+  translation -2.20484 0.441327 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(15)"
+}
+WoodenBox {
+  translation -3.7018 0.343227 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(16)"
+}
+WoodenBox {
+  translation -3.49316 -2.83992 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(17)"
+}
+WoodenBox {
+  translation -3.53113 -2.26108 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(42)"
+}
+WoodenBox {
+  translation -2.93427 -2.80327 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(18)"
+}
+WoodenBox {
+  translation -2.33548 -2.764 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(19)"
+}
+WoodenBox {
+  translation -2.24259 -4.18104 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(40)"
+}
+WoodenBox {
+  translation -1.73361 -4.14766 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(41)"
+}
+WoodenBox {
+  translation -1.50203 -1.10604 0.3
+  rotation 0 0 -1 -0.06544530717958619
   name "wooden box(6)"
 }
 WoodenBox {
-  translation 1.66679 -1.29006 0.9
+  translation -0.915855 -1.63882 0.3
+  rotation 0 0 -1 -0.06544530717958619
+  name "wooden box(20)"
+}
+WoodenBox {
+  translation 1.21218 -0.928084 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(7)"
+}
+WoodenBox {
+  translation 3.90598 0.871946 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(8)"
+}
+WoodenBox {
+  translation 0.152831 -3.60857 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(9)"
+}
+WoodenBox {
+  translation 0.635084 -3.28626 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(10)"
+}
+WoodenBox {
+  translation 2.21478 -2.23057 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(11)"
+}
+WoodenBox {
+  translation 2.43923 -2.08053 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(14)"
+}
+WoodenBox {
+  translation 2.7385 -1.88048 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(12)"
+}
+WoodenBox {
+  translation 3.06636 -2.37095 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(13)"
+}
+WoodenBox {
+  translation 3.06278 -4.02106 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(36)"
+}
+WoodenBox {
+  translation 4.35138 -3.15981 0.3
+  rotation 0 0 1 -0.9817553071795864
+  name "wooden box(37)"
+}
+WoodenBox {
+  translation 4.18512 -0.625106 0.3
+  rotation 0 0 1 0.0654422
+  name "wooden box(38)"
+}
+WoodenBox {
+  translation 4.22046 -1.16397 0.3
+  rotation 0 0 1 0.0654422
+  name "wooden box(39)"
+}
+WoodenBox {
+  translation 0.821339 4.12919 0.3
+  rotation 0 0 -1 0.19635
+  name "wooden box(3)"
+}
+WoodenBox {
+  translation 1.70404 3.95367 0.3
   rotation 0 0 1 0.0654494
-  name "wooden box(24)"
+  name "wooden box(1)"
 }
 TurtleBot3Burger {
-  hidden position_0_0 4.5072897835528973e-13
-  hidden position_0_1 2.342514888375262e-13
-  hidden position_0_2 3.034493480629623e-08
-  hidden position2_0_2 4.963582688779539e-05
-  hidden position3_0_2 -8.550541817820376e-08
-  hidden linearVelocity_0 -1.8553709089608214e-14 -1.1194453285683152e-14 -1.6315028756212946e-14
-  hidden angularVelocity_0 -7.515923242101643e-16 -6.226227150110549e-13 2.313707540051109e-16
-  hidden linearVelocity_4 -2.05267112442107e-14 -1.231459699750423e-14 6.482359608150383e-15
-  hidden angularVelocity_4 -5.639565584739165e-15 -6.220822569371264e-13 2.348955747669902e-16
-  hidden linearVelocity_5 -2.0541884370959615e-14 1.2147131921413853e-14 6.981023843740502e-15
-  hidden angularVelocity_5 8.669382036276693e-16 -6.225071013201341e-13 2.3249858707704714e-16
-  hidden rotation_6 0.0006113076772432081 0.9999983294105923 -0.0017226372074056204 4.963590885239387e-05
-  hidden linearVelocity_6 -2.2689210075838575e-15 -5.6499468889177065e-15 -8.903859858693938e-15
-  hidden angularVelocity_6 1.4124867209984545e-12 -5.672302197633e-13 1.063118294494519e-24
-  translation 2.1054080007187892e-10 -4.390000000133731 -0.00010674373925565611
-  rotation -9.236537087985754e-06 -0.9999999999573401 -7.767832477948004e-08 0.0022129072145160643
-  name "Agent3"
-  controller "Agent3"
-  extensionSlot [
-    Emitter {
-      channel 3
-    }
-    Receiver {
-      name "receiver_agent1"
-      channel 1
-    }
-    Receiver {
-      name "receiver_agent2"
-      channel 2
-    }
-  ]
-}
-TurtleBot3Burger {
-  hidden position_0_0 -2.0275530067199663e-11
-  hidden position_0_1 -7.125839476647194e-11
-  hidden position_0_2 0.006073180677237565
-  hidden position2_0_2 -0.6136158958393154
-  hidden position3_0_2 0.001477259434513662
-  hidden linearVelocity_0 -1.701202693489326e-14 -1.1158196596086312e-14 -1.4387514810331246e-14
-  hidden angularVelocity_0 -1.126040527664244e-15 -5.689092090402177e-13 4.49299391416968e-16
-  hidden rotation_4 0 -1 0 1.5707960005599269
-  hidden linearVelocity_4 -1.8738283788450594e-14 -1.19211215834893e-14 6.731686888891858e-15
-  hidden angularVelocity_4 -2.5474516629699798e-15 -5.679664883039919e-13 4.47330817647794e-16
-  hidden rotation_5 -0.7071047806225815 -1.8485018191773124e-15 -0.7071087817448536 3.141588
-  hidden linearVelocity_5 -1.878217527604904e-14 1.1852658537546026e-14 5.485073354641799e-15
-  hidden angularVelocity_5 1.6976916743609266e-14 -5.690870411013881e-13 4.469535623359273e-16
-  hidden rotation_6 0.00884583749455632 -0.9999606262087142 -0.0007051179305854297 0.6136422367735082
-  hidden linearVelocity_6 -2.2008613948227845e-15 -5.661677403525082e-15 1.7600741629277343e-14
-  hidden angularVelocity_6 1.4154193411051236e-12 -5.50215320782428e-13 -2.7990284109095954e-21
-  translation -1.4125156467159505 -4.389992979070382 -0.00010674373925553468
-  rotation 0.0001721863224151958 -0.9864844329561531 0.16385491718910147 0.0022432256600848285
+  translation 0 -4.53 0
   name "Agent1"
-  controller "Agent1py"
+  controller "agent1"
   extensionSlot [
+    GPS {
+    }
+    Receiver {
+      name "receiver_agent2"
+      channel 2
+    }
+    Receiver {
+      name "receiver_agent3"
+      channel 3
+    }
     Emitter {
+      channel 1
+    }
+  ]
+}
+TurtleBot3Burger {
+  translation 0.86 -4.53 0.1
+  name "Agent2"
+  controller "agent2"
+  extensionSlot [
+    Receiver {
+      name "receiver_agent1"
       channel 1
     }
     Receiver {
       name "receiver_agent3"
       channel 3
     }
-    Receiver {
-      name "receiver_agent2"
+    GPS {
+    }
+    Emitter {
       channel 2
     }
   ]
 }
 TurtleBot3Burger {
-  hidden position_0_0 -2.0275300150713188e-11
-  hidden position_0_1 -7.12583895622952e-11
-  hidden position_0_2 0.006073180676619197
-  hidden position2_0_2 -0.6136158958387926
-  hidden position3_0_2 0.001477259434530139
-  hidden linearVelocity_0 -1.8621999999411746e-14 -2.8666659082426897e-15 -1.7829503999405712e-14
-  hidden angularVelocity_0 2.2558949647436876e-15 -6.691492048209339e-13 5.207174914474987e-16
-  hidden rotation_4 0 -1 0 1.5707960005599082
-  hidden linearVelocity_4 -2.2036632162032996e-14 -1.2884469700848774e-14 6.108376729962384e-15
-  hidden angularVelocity_4 7.185940075766918e-15 -6.679976051225585e-13 5.233410324463886e-16
-  hidden rotation_5 -0.707104780622584 -1.8484951345508033e-15 -0.7071087817448513 3.141588
-  hidden linearVelocity_5 -2.209282545483486e-14 1.2725623213287182e-14 5.983725586658991e-15
-  hidden angularVelocity_5 7.182874333095145e-15 -6.693753896130771e-13 5.234653054111531e-16
-  hidden rotation_6 0.008845837493580982 -0.999960626208723 -0.0007051179302481449 0.6136422367729796
-  hidden linearVelocity_6 -3.95273954390634e-15 -2.8497232193440625e-15 4.410536581377367e-14
-  hidden angularVelocity_6 7.124308059608019e-13 -9.881848816201667e-13 2.973569884104941e-21
-  translation 1.34748435328405 -4.389992979070384 -0.00010674373925558672
-  rotation 0.00017218632269746706 -0.9864844329564298 0.16385491718743536 0.0022432256600908042
-  name "Agent2"
-  controller "Agent2"
+  translation 1.76 -4.53 0.2
+  name "Agent3"
+  controller "agent3"
   extensionSlot [
+    GPS {
+    }
     Receiver {
-      name "receiver_agent3"
-      channel 3
+      name "receiver_agent2"
+      channel 2
     }
     Receiver {
       name "receiver_agent1"
       channel 1
     }
     Emitter {
-      channel 2
+      channel 3
     }
   ]
 }
