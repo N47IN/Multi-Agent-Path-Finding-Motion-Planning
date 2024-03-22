@@ -157,9 +157,6 @@ def RRT(node_list,goal,image,radius = 0.3, goal_bias = 0.5):
 #             node_list.append(child)
 #         displayPoints(node_list,image)
         
-    
-
-
 if __name__ == '__main__':
     map = readMap()
     node_list = []
