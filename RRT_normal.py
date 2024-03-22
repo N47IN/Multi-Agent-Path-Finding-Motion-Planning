@@ -27,8 +27,8 @@ def readMap():
 
 # cartesian to pixel
 def ctop(point):
-    x = min(shape[0]-1,int(shape[0] - point[0]/10*shape[0]))
-    y = min(shape[1]-1,int(shape[1] - point[1]/10*shape[1]))
+    y = min(shape[0]-1,int(shape[0] - point[0]/10*shape[0]))
+    x = min(shape[1]-1,int(shape[1] - point[1]/10*shape[1]))
     return x,y 
 
 def displayPoints(Nodes,image):
@@ -40,11 +40,11 @@ def displayPoints(Nodes,image):
         image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 5, (0,255,0), -1)
         node = Nodes[i]
         if i>=1:
-            line_start = ctop((node.x,node.y))
-            line_end = ctop((node.parent.x,node.parent.y))
+            line_start = ctop((node.x,node.y))[::-1]
+            line_end = ctop((node.parent.x,node.parent.y))[::-1]
             cv2.line(image1, line_start, line_end, (0,0,0), 1)
     cv2.imshow("Nodes", image1)
-    cv2.waitKey(500)
+    cv2.waitKey(10)
 
 """ def displayGoal(goal,start,image):
     image = cv2.circle(image,(int(goal[0]), int(goal[1])), 10, (0,0,255), -1)
@@ -67,22 +67,39 @@ class Map:
 def collision_check(x,y,x_new,y_new):
     x,y = ctop([x,y])
     x_new , y_new = ctop([x_new,y_new])
-    line_x = np.arange(x,x_new,0.0005)
-    line_y = y + (line_x - x)*(y_new - y)/(x_new - x)
     collision = False
-    for i in range(len(line_x)):
-        if any(image[int(line_x[i]),int(line_y[i])] == 0)  :
-            print("collido")
+    try:
+        line_x = np.linspace(x,x_new,100)
+        line_y = y + (line_x - x)*(y_new - y)/(x_new - x)
+        avg_pixels = [int(x) for x in sum([image[int(line_x[i]), int(line_y[i])]/len(line_x) for i in range(len(line_x))])]
+        if avg_pixels == [255, 255, 255]:
+            collision = False
+        else:
+            print(avg_pixels)
             collision = True
-            return collision
-        
-    if any(image[x_new,y_new]) ==[0,0,0]:
-            print("collido")
-            collision = True
-            return collision
-            
-    print(image[x_new,y_new])
+    except:
+        collision = True
     return collision
+
+# def collision_check(x,y,x_new,y_new):
+#     x,y = ctop([x,y])
+#     x_new , y_new = ctop([x_new,y_new])
+#     line_x = np.arange(x,x_new,0.0005)
+#     line_y = y + (line_x - x)*(y_new - y)/(x_new - x)
+#     collision = False
+#     for i in range(len(line_x)):
+#         if any(image[int(line_x[i]),int(line_y[i])] == 0)  :
+#             print("collido")
+#             collision = True
+#             return collision
+        
+    # if any(image[x_new,y_new]) ==[0,0,0]:
+    #         print("collido")
+    #         collision = True
+    #         return collision
+            
+    # print(image[x_new,y_new])
+    # return collision
     
 
 def generate_node(sampled_pt, radius, node_list):
@@ -102,19 +119,19 @@ def goal_check(node, goal, goal_threshold = 0.1):
     else:
         return False
 
-def RRT(node_list,goal,image,radius = 0.3, goal_bias = 0.05):
+def RRT(node_list,goal,image,radius = 0.3, goal_bias = 0.5):
     p = np.random.random()
     if  p > goal_bias:
         x = np.random.random() * 10
         y = np.random.random() * 10
         sampled_pt = (x,y)
-        print('no bias')
     else:
         
         sampled_pt = goal
     child = generate_node(sampled_pt, radius, node_list)
     Xp,Yp = ctop([child.x,child.y])
-    if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
+    if collision_check(child.parent.x,child.parent.y,child.x,child.y):
+        print(child.parent.x,child.parent.y, child.x, child.y)
         print("collido")
     elif Xp < 0 or Yp < 0 :
         print("outside")
