@@ -38,6 +38,11 @@ def displayPoints(Nodes,image):
     image1 = cv2.imread("Image.png")
     for i in range(len(x_len)):
         image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 5, (0,255,0), -1)
+        node = Nodes[i]
+        if i>=1:
+            line_start = ctop((node.x,node.y))
+            line_end = ctop((node.parent.x,node.parent.y))
+            cv2.line(image1, line_start, line_end, (0,0,0), 1)
     cv2.imshow("Nodes", image1)
     cv2.waitKey(500)
 
@@ -80,13 +85,15 @@ def collision_check(x,y,x_new,y_new):
     return collision
     
 
-def generate_node(parent,radius):
-    x = np.random.random()*10 #replace with map size variable
-    y = np.random.random()*10
-    x_curr = parent.x
-    y_curr = parent.y
-    m = (y-y_curr)/(x-x_curr)
-    
+def generate_node(sampled_pt, radius, node_list):
+    tree = KDTree([(node.x,node.y) for node in node_list])
+    _, parent_index = tree.query(sampled_pt)
+    parent = node_list[parent_index]
+    x_init = node_list[parent_index].x
+    y_init = node_list[parent_index].y
+    angle = np.arctan2(sampled_pt[1]-y_init, sampled_pt[0]-x_init)
+    x_new = x_init + np.cos(angle)*radius
+    y_new = y_init + np.sin(angle)*radius
     return Node(x_new,y_new,parent)
 
 def goal_check(node, goal, goal_threshold = 0.1):
@@ -95,42 +102,43 @@ def goal_check(node, goal, goal_threshold = 0.1):
     else:
         return False
 
-def RRT_greedy(node_list,goal,image,radius = 1):
-        print("EXPLOITING")
-        curr_node = node_list[-1]
-        tree = KDTree([(node.x,node.y) for node in node_list])
-        _, new_parent_index = tree.query(goal)
-        curr_node = node_list[new_parent_index]
-        radius = min(1.25, 0.5*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
-        #radius = 1.25
-        child = generate_node(curr_node,radius)
-        Xp,Yp = ctop([child.x,child.y])
-        if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
-            print("collido")
-        elif Xp < 0 or Yp < 0 :
-            print("outside")
-        else:
-            node_list.append(child)
-        displayPoints(node_list,image)
+def RRT(node_list,goal,image,radius = 0.3, goal_bias = 0.05):
+    p = np.random.random()
+    if  p > goal_bias:
+        x = np.random.random() * 10
+        y = np.random.random() * 10
+        sampled_pt = (x,y)
+        print('no bias')
+    else:
         
+        sampled_pt = goal
+    child = generate_node(sampled_pt, radius, node_list)
+    Xp,Yp = ctop([child.x,child.y])
+    if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
+        print("collido")
+    elif Xp < 0 or Yp < 0 :
+        print("outside")
+    else:
+        node_list.append(child)
+    displayPoints(node_list,image)
+    return node_list
 
-
-def RRT_explore(node_list,goal,image,radius = 1):
-        print("EXPLORING")
-        curr_node = node_list[-1]
-        # radius = min(1.25, 0.5*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
-        tree = KDTree([(node.x,node.y) for node in node_list])
-        _, new_parent_index = tree.query(child)
-        parent = node_list[new_parent_index]
-        child =Node(child[0],child[1],parent)
-        Xp,Yp = ctop([child.x,child.y])
-        if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
-            print("collido")
-        elif Xp < 0 or Yp < 0 :
-            print("outside")
-        else:
-            node_list.append(child)
-        displayPoints(node_list,image)
+# def RRT_explore(node_list,goal,image,radius = 1):
+#         print("EXPLORING")
+#         curr_node = node_list[-1]
+#         # radius = min(1.25, 0.5*np.sqrt((goal[1] - curr_node.y)**2 + (goal[0] - curr_node.x)**2))
+#         tree = KDTree([(node.x,node.y) for node in node_list])
+#         _, new_parent_index = tree.query(child)
+#         parent = node_list[new_parent_index]
+#         child =Node(child[0],child[1],parent)
+#         Xp,Yp = ctop([child.x,child.y])
+#         if collision_check(curr_node.x,curr_node.y,child.x,child.y,):
+#             print("collido")
+#         elif Xp < 0 or Yp < 0 :
+#             print("outside")
+#         else:
+#             node_list.append(child)
+#         displayPoints(node_list,image)
         
     
 
@@ -141,14 +149,9 @@ if __name__ == '__main__':
     image = cv2.imread("Binary_Mask.png")
     shape = image.shape[:2]
     print(shape)
-    start = [0.3,0.3]
-    goal = [6,7]
+    start = [6,6]
+    goal = [1,1]
     curr_node = Node(start[0],start[1],parent=None)
     node_list.append(curr_node)
     while not(goal_check(curr_node,goal)):
-        epsilon = 0.2
-        p =np.random.random()
-        if p>epsilon:
-            RRT_greedy(node_list,goal,image)
-        else:
-            RRT_explore(node_list,goal,image)
+        node_list = RRT(node_list, goal, image)
