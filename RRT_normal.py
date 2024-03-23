@@ -48,7 +48,7 @@ def displayPoints(Nodes,image):
     cv2.circle(image1,(start_p[1], start_p[0]), 5, (255,0,0), -1)
     cv2.circle(image1,(goal_p[1], goal_p[0]), 5, (0,0,255), -1)
     cv2.imshow("Nodes", image1)
-    cv2.waitKey(100)
+    cv2.waitKey(10)
 
 def displayPath(path, image):
     cv2.imwrite("Image.png",image)
@@ -127,7 +127,7 @@ def generate_node(sampled_pt, radius, node_list):
     y_new = y_init + np.sin(angle)*radius
     return Node(x_new,y_new,parent)
 
-def goal_check(node, goal, goal_threshold = 0.1):
+def goal_check(node, goal, goal_threshold = 0.2):
     dist = np.sqrt((goal[1] - node.y)**2 + (goal[0] - node.x)**2)
     # print(dist)
     if dist < goal_threshold:
@@ -143,12 +143,13 @@ def generate_path(node):
         node = node.parent
     return path[::-1]
 
-def RRT(start,goal,image,radius = 0.5, goal_bias = 0.05):
+def RRT(start,goal,image,radius = 0.1, goal_bias = 0.05):
+    fast_goal = False
     node_list = []
     curr_node = Node(start[0],start[1],parent=None)
     node_list.append(curr_node)
     goal_found = False
-    while(not(goal_check(node_list[-1], goal) or goal_found)):
+    while(not(goal_check(node_list[-1], goal) or goal_found)):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
         p = np.random.random()
         goal_sampled = False
         if  p > goal_bias:
@@ -171,7 +172,10 @@ def RRT(start,goal,image,radius = 0.5, goal_bias = 0.05):
         else:
             node_list.append(child)
             if goal_sampled:
-                goal_found = goal_check(child,goal,radius)
+                goal_found = goal_check(child,goal,radius)  #to check if the goal is less than 'radius' away. 
+                if fast_goal:    #Check if no obstacle to goal, then shoot into goal. 
+                    if not(collision_check(goal[0], goal[1], child.x, child.y)):
+                        goal_found = True
         displayPoints(node_list,image)
     node_list.append(Node(goal[0], goal[1], node_list[-1]))
     path = generate_path(node_list[-1])
@@ -205,7 +209,7 @@ if __name__ == '__main__':
     image = cv2.imread("Binary_Mask.png")
     shape = image.shape[:2]
     print(shape)
-    start = [1,3]
+    start = [5,6]
     goal = [8,9]
     path = RRT(start, goal, image)
     displayPath(path, image)
