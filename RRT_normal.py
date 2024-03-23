@@ -43,8 +43,22 @@ def displayPoints(Nodes,image):
             line_start = ctop((node.x,node.y))[::-1]
             line_end = ctop((node.parent.x,node.parent.y))[::-1]
             cv2.line(image1, line_start, line_end, (0,0,0), 1)
+    start_p = ctop(start)
+    goal_p = ctop(goal)
+    cv2.circle(image1,(start_p[1], start_p[0]), 5, (255,0,0), -1)
+    cv2.circle(image1,(goal_p[1], goal_p[0]), 5, (0,0,255), -1)
     cv2.imshow("Nodes", image1)
-    cv2.waitKey(10)
+    cv2.waitKey(100)
+
+def displayPath(path, image):
+    cv2.imwrite("Image.png",image)
+    image1 = cv2.imread("Image.png")
+    for i in range(1,len(path)):
+        line_start = ctop((path[i].x,path[i].y))[::-1]
+        line_end = ctop((path[i-1].x,path[i-1].y))[::-1]
+        cv2.line(image1, line_start, line_end, (0,0,0), 3)
+    cv2.imshow("Nodes", image1)
+    cv2.waitKey(3000)
 
 """ def displayGoal(goal,start,image):
     image = cv2.circle(image,(int(goal[0]), int(goal[1])), 10, (0,0,255), -1)
@@ -75,7 +89,7 @@ def collision_check(x,y,x_new,y_new):
         if avg_pixels == [255, 255, 255]:
             collision = False
         else:
-            print(avg_pixels)
+            # print(avg_pixels)
             collision = True
     except:
         collision = True
@@ -114,31 +128,54 @@ def generate_node(sampled_pt, radius, node_list):
     return Node(x_new,y_new,parent)
 
 def goal_check(node, goal, goal_threshold = 0.1):
-    if np.sqrt((goal[1] - node.y)**2 + (goal[0] - node.x)**2) < goal_threshold:
+    dist = np.sqrt((goal[1] - node.y)**2 + (goal[0] - node.x)**2)
+    # print(dist)
+    if dist < goal_threshold:
+        goal_found = True
         return True
     else:
         return False
 
-def RRT(node_list,goal,image,radius = 0.3, goal_bias = 0.5):
-    p = np.random.random()
-    if  p > goal_bias:
-        x = np.random.random() * 10
-        y = np.random.random() * 10
-        sampled_pt = (x,y)
-    else:
-        
-        sampled_pt = goal
-    child = generate_node(sampled_pt, radius, node_list)
-    Xp,Yp = ctop([child.x,child.y])
-    if collision_check(child.parent.x,child.parent.y,child.x,child.y):
-        print(child.parent.x,child.parent.y, child.x, child.y)
-        print("collido")
-    elif Xp < 0 or Yp < 0 :
-        print("outside")
-    else:
-        node_list.append(child)
-    displayPoints(node_list,image)
-    return node_list
+def generate_path(node):
+    path = []
+    while node != None:
+        path.append(node)
+        node = node.parent
+    return path[::-1]
+
+def RRT(start,goal,image,radius = 0.5, goal_bias = 0.05):
+    node_list = []
+    curr_node = Node(start[0],start[1],parent=None)
+    node_list.append(curr_node)
+    goal_found = False
+    while(not(goal_check(node_list[-1], goal) or goal_found)):
+        p = np.random.random()
+        goal_sampled = False
+        if  p > goal_bias:
+            x = np.random.random() * 10
+            y = np.random.random() * 10
+            sampled_pt = (x,y)
+        else:
+            sampled_pt = goal
+            goal_sampled = True
+            # print('goal sampling')
+        child = generate_node(sampled_pt, radius, node_list)
+        Xp,Yp = ctop([child.x,child.y])
+        if collision_check(child.parent.x,child.parent.y,child.x,child.y):
+            # print(child.parent.x,child.parent.y, child.x, child.y)
+            # print("collido")
+            continue
+        elif Xp < 0 or Yp < 0 :
+            # print("outside")
+            continue
+        else:
+            node_list.append(child)
+            if goal_sampled:
+                goal_found = goal_check(child,goal,radius)
+        displayPoints(node_list,image)
+    node_list.append(Node(goal[0], goal[1], node_list[-1]))
+    path = generate_path(node_list[-1])
+    return path
 
 # def RRT_explore(node_list,goal,image,radius = 1):
 #         print("EXPLORING")
@@ -156,16 +193,19 @@ def RRT(node_list,goal,image,radius = 0.3, goal_bias = 0.5):
 #         else:
 #             node_list.append(child)
 #         displayPoints(node_list,image)
-        
+
+# class RRT_planner:
+#     def __init__(self, image_src):
+#         self.map_image = cv2.imread(image_src)
+#         self.map_shape = 
+#     def 
+
 if __name__ == '__main__':
     map = readMap()
-    node_list = []
     image = cv2.imread("Binary_Mask.png")
     shape = image.shape[:2]
     print(shape)
-    start = [6,6]
-    goal = [1,1]
-    curr_node = Node(start[0],start[1],parent=None)
-    node_list.append(curr_node)
-    while not(goal_check(curr_node,goal)):
-        node_list = RRT(node_list, goal, image)
+    start = [1,3]
+    goal = [8,9]
+    path = RRT(start, goal, image)
+    displayPath(path, image)
