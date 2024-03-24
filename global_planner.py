@@ -92,15 +92,18 @@ class RRT_planner:
             path.append([node.x,node.y])
             node = node.parent
         return path[::-1]
-
-    def RRT(self, start,goal,radius = 0.1, goal_bias = 0.05):
+    
+    def setStart(self,start):
         self.start = start
+        
+    def setGoal(self,goal):
         self.goal = goal
+
+    def RRT(self,radius = 0.1, goal_bias = 0.05):
         self.radius = radius
         self.fast_goal = False
-        self.node_list = []
+        self.node_list = [] 
         self.goal_found = False
-
         curr_node = Node(self.start[0],self.start[1],parent=None)
         self.node_list.append(curr_node)
         goal_found = False
@@ -156,7 +159,10 @@ class RRT_planner:
 if __name__ == '__main__':
     # map = readMap()
     planner = RRT_planner("Binary_Mask.png")
-    start = [5,6]
+    start = [6,1]
     goal = [8,9]
-    path = planner.RRT(start, goal)
+    planner.setGoal(goal)
+    planner.setStart(start)
+    path = planner.RRT()
+   
     planner.displayPath(path)
