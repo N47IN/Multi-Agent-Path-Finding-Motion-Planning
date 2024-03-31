@@ -5,5 +5,5 @@ sceneTreePerspectives: 000000ff00000001000000030000001c000002b4000000fa010000000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 0 "controllers/Agent3/Agent3.py" "controllers/Agent2/Agent2.py"
+textFiles: 1 "controllers/Agent3/Agent3.py" "controllers/Agent2/Agent2.py"
 consoles: Console:All:All

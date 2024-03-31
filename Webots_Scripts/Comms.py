@@ -25,7 +25,7 @@ class comms():
         if self.agent1.getQueueLength()>0:
             message1 = self.agent1.getBytes()
             coord1 = rnd(np.frombuffer(message1, dtype=np.float64)) 
-            print("Agent1 :",coord1)
+            #print("Agent1 :",coord1)
             return coord1
         else:
             pass
@@ -34,7 +34,7 @@ class comms():
         if self.agent3.getQueueLength()>0:
             message3 = self.agent3.getBytes()
             coord3 = rnd(np.frombuffer(message3, dtype=np.float64)) 
-            print("Agent3 :",coord3)
+            #print("Agent3 :",coord3)
             return coord3
         else:
             pass
@@ -43,7 +43,7 @@ class comms():
         if self.Admin.getQueueLength()>0:
             message = self.Admin.getBytes()
             coord = rnd(np.frombuffer(message, dtype=np.float64)) 
-            print("Admin :",coord)
+            #print("Admin :",coord)
             return coord
             
         else:

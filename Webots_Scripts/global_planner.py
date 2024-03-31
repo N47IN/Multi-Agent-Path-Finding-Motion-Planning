@@ -17,12 +17,12 @@ class RRT_planner:
         self.shape = self.map_image.shape[:2]
     
     def ctop(self, point):
-        y = min(self.shape[0]-1,int(self.shape[0] - point[0]/10*self.shape[0]))
+        y = min(self.shape[0]-1,int(point[0]/10*self.shape[0]))
         x = min(self.shape[1]-1,int(self.shape[1] - point[1]/10*self.shape[1]))
         return x,y 
 
     def displayPoints(self, Nodes):
-        x_len = [self.shape[0] - a.x/10*self.shape[0] for a in Nodes]
+        x_len = [a.x/10*self.shape[0] for a in Nodes]
         y_len = [self.shape[1] - a.y/10*self.shape[1] for a in Nodes]
         cv2.imwrite("Image.png",self.map_image)
         image1 = cv2.imread("Image.png")
@@ -34,7 +34,7 @@ class RRT_planner:
                 line_end = self.ctop((node.parent.x,node.parent.y))[::-1]
                 cv2.line(image1, line_start, line_end, (0,0,0), 1)
         start_p = self.ctop(self.start)
-        goal_p = self.ctop(self.goal)
+        goal_p = self.ctop([self.goal[0],self.goal[1]])
         cv2.circle(image1,(start_p[1], start_p[0]), 5, (255,0,0), -1)
         cv2.circle(image1,(goal_p[1], goal_p[0]), 5, (0,0,255), -1)
         cv2.imshow("Nodes", image1)
@@ -99,7 +99,7 @@ class RRT_planner:
     def setGoal(self,goal):
         self.goal = goal
 
-    def RRT(self,radius = 0.1, goal_bias = 0.05):
+    def RRT(self,mode = False,radius = 0.1, goal_bias = 0.05):
         self.radius = radius
         self.fast_goal = False
         self.node_list = [] 
@@ -135,7 +135,8 @@ class RRT_planner:
                     if self.fast_goal:    #Check if no obstacle to goal, then shoot into goal. 
                         if not(self.collision_check(self.goal[0], self.goal[1], child.x, child.y)):
                             goal_found = True
-            #self.displayPoints(self.node_list)
+            if mode:
+                self.displayPoints(self.node_list)
         self.node_list.append(Node(self.goal[0], self.goal[1], self.node_list[-1]))
         path = self.generate_path(self.node_list[-1])
         return path
@@ -159,11 +160,11 @@ class RRT_planner:
 
 if __name__ == '__main__':
     # map = readMap()
-    planner = RRT_planner("Binary_Mask.png")
+    planner = RRT_planner("Webots_Scripts/Binary_Mask.png")
     start = [6,1]
     goal = [8,9]
     planner.setGoal(goal)
     planner.setStart(start)
     path = planner.RRT()
    
-    planner.displayPath(path)
+    #planner.displayPath(path)

@@ -22,8 +22,8 @@ keyboard.enable(10)
 agent1.enable(10)
 agent3.enable(10)
 
-right_motor.setPosition(100)
-left_motor.setPosition(100)
+right_motor.setPosition(float('inf'))
+left_motor.setPosition(float('inf'))
 right_motor.setVelocity(0.0)
 left_motor.setVelocity(0.0)
 timestep = 10
@@ -47,6 +47,8 @@ def rnd(number, precision=4):
 while robot.step(timestep) != -1:
     position = gps.getValues()
     broadcast(position)
+    #right_motor.setVelocity(1)
+    #left_motor.setVelocity(1)
     
     
 # Enter here exit cleanup code.

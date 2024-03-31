@@ -1,4 +1,5 @@
 # Talks at channel 1
+from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
 from global_planner import RRT_planner
@@ -32,17 +33,12 @@ comms = comms(agent2= agent2,agent3=agent3, Admin=admin)
 g_planner = RRT_planner("Binary_Mask.png")
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
-right_motor.setPosition(100)
-left_motor.setPosition(100)
+right_motor.setPosition(float('inf'))
+left_motor.setPosition(float('inf'))
 right_motor.setVelocity(0.0)
 left_motor.setVelocity(0.0)
 timestep = 10
 
-command ={                 
-   ord("W"): [3,3],
-   ord("A"):[3,0],
-   ord("D"):[0,3]
-   }
 
 path = False
 
@@ -52,13 +48,10 @@ def broadcast(data):
     emitter.send(message)
     
 def steer(data,v):
-    speed = data*v
-    right_motor.setVelocity(-speed)
-    left_motor.setVelocity(speed)
+    speed = data*0.10/(0.5*0.8)
+    right_motor.setVelocity(-10*v -3*speed)
+    left_motor.setVelocity(-10*v +3*speed)
 
-def move(v):
-    right_motor.setVelocity(-v)
-    left_motor.setVelocity(v)
     
 def rnd(number, precision=4):
     if isinstance(number, (int, float)):
@@ -66,12 +59,16 @@ def rnd(number, precision=4):
     if isinstance(number , np.ndarray):
         return np.round(number, precision)
     
-time = 0
+start_time = robot.getTime()
 v = 0
-
+time = 0
+velocity = 0
 
 while robot.step(timestep) != -1:
     position = gps.getValues()
+    
+
+    #print(position)
     broadcast(position)
     yaw = Yaw.getRollPitchYaw()
     yaw = yaw[2] 
@@ -82,16 +79,22 @@ while robot.step(timestep) != -1:
         print("current position Agent1 :",position[0:2])
         print("goal Agent1 :",goal)
         g_planner.setStart(position[0:2])
-        g_planner.setGoal(goal)
-        global_path = np.asarray(g_planner.RRT())
+        g_planner.setGoal([ goal[0], goal[1]])
+        global_path = np.asarray(g_planner.RRT(mode = True))
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
         path = True
         tracker = PP(g_plan_smoothed,yaw)
-        print(global_path)
+        #print(g_plan)
         
     if path == True:
-        while np.linalg.norm(position[0:2] - goal) < 0.05 :
-            v, steering_angle, time = PP.execute(position[0], position[1], yaw, v ,time)
-            steer(steering_angle,v)
-            move(v)
+        if np.linalg.norm(position[0:2] - goal) > 0.05 :
+            time2 = robot.getTime() - start_time
+            
+            #print(time2)
+            velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
+            steer(steering_angle,velocity)
+         
+            #steer(steering_angle,v)move(velocity)
+            
+            #print("tryna move")
         
