@@ -80,7 +80,7 @@ while robot.step(timestep) != -1:
         print("goal Agent1 :",goal)
         g_planner.setStart(position[0:2])
         g_planner.setGoal([ goal[0], goal[1]])
-        global_path = np.asarray(g_planner.RRT(mode = True))
+        global_path = np.asarray(g_planner.RRT(mode=True))
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
         path = True
         tracker = PP(g_plan_smoothed,yaw)
@@ -89,12 +89,11 @@ while robot.step(timestep) != -1:
     if path == True:
         if np.linalg.norm(position[0:2] - goal) > 0.05 :
             time2 = robot.getTime() - start_time
-            
-            #print(time2)
-            velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
-            steer(steering_angle,velocity)
-         
-            #steer(steering_angle,v)move(velocity)
-            
-            #print("tryna move")
+
+            try :
+                velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
+                steer(steering_angle,velocity)
+            except:
+                steer(0,0)
+
         
