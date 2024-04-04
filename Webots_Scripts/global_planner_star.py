@@ -10,11 +10,17 @@ class Node:
         self.x = x
         self.y = y
         self.parent = parent
+        self.cost = 0
+    def update_cost(self):
+        self.cost = self.parent.cost + np.sqrt((self.y - self.parent.y)**2 + (self.x - self.parent.x)**2)
+    def distance(self, node):
+        return np.sqrt((self.y - node.y)**2 + (self.x - node.x)**2)
 
-class RRT_planner:
-    def __init__(self, map_image_src):
+class RRT_star_planner:
+    def __init__(self, map_image_src, rewire_radius):
         self.map_image = cv2.imread(map_image_src)
         self.shape = self.map_image.shape[:2]
+        self.rewire_radius = rewire_radius
     
     def ctop(self, point):
         y = min(self.shape[0]-1,int(point[0]/10*self.shape[0]))
@@ -37,6 +43,7 @@ class RRT_planner:
         goal_p = self.ctop([self.goal[0],self.goal[1]])
         cv2.circle(image1,(start_p[1], start_p[0]), 5, (255,0,0), -1)
         cv2.circle(image1,(goal_p[1], goal_p[0]), 5, (0,0,255), -1)
+        bigger = cv2.resize(image1, (1050, 1610))
         cv2.imshow("Nodes", image1)
         cv2.waitKey(10)
 
@@ -48,7 +55,7 @@ class RRT_planner:
             line_end = self.ctop((path[i-1][0],path[i-1][1]))[::-1]
             cv2.line(image1, line_start, line_end, (0,0,0), 3)
         cv2.imshow("Nodes", image1)
-        cv2.waitKey(3000)
+        cv2.waitKey(10)
 
     def collision_check(self, x,y,x_new,y_new):
         x,y = self.ctop([x,y])
@@ -68,6 +75,14 @@ class RRT_planner:
             collision = True
         return collision    
 
+    def rewire(self,new_node,tree):
+        nearest_point_indices = tree.query_ball_point((new_node.x, new_node.y),self.rewire_radius)
+        # points = [self.node_list[index] for index in nearest_point_indices]
+        for i in nearest_point_indices:
+            if self.node_list[i].cost >  new_node.cost + new_node.distance(self.node_list[i]):
+                self.node_list[i].parent = new_node
+                self.node_list[i].update_cost()
+
     def generate_node(self, sampled_pt):
         tree = KDTree([(node.x,node.y) for node in self.node_list])
         _, parent_index = tree.query(sampled_pt)
@@ -77,7 +92,10 @@ class RRT_planner:
         angle = np.arctan2(sampled_pt[1]-y_init, sampled_pt[0]-x_init)
         x_new = x_init + np.cos(angle)*self.radius
         y_new = y_init + np.sin(angle)*self.radius
-        return Node(x_new,y_new,parent)
+        new_node = Node(x_new,y_new,parent)
+        new_node.update_cost()
+        self.rewire(new_node,tree)
+        return new_node
 
     def goal_check(self, node, goal_threshold = 0.2):
         dist = np.sqrt((self.goal[1] - node.y)**2 + (self.goal[0] - node.x)**2)
@@ -109,7 +127,7 @@ class RRT_planner:
         curr_node = Node(self.start[0],self.start[1],parent=None)
         self.node_list.append(curr_node)
         goal_found = False
-        while(not(self.goal_check(self.node_list[-1]) or goal_found)):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
+        while(True):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
             p = np.random.random()
             goal_sampled = False
             if  p > goal_bias:
@@ -138,6 +156,8 @@ class RRT_planner:
                             goal_found = True
             if mode:
                 self.displayPoints(self.node_list)
+                path = self.generate_path(self.node_list[-1])
+                self.displayPath(path)
         self.node_list.append(Node(self.goal[0], self.goal[1], self.node_list[-1]))
         path = self.generate_path(self.node_list[-1])
         return path
@@ -161,9 +181,9 @@ class RRT_planner:
 
 if __name__ == '__main__':
     # map = readMap()
-    planner = RRT_planner("Webots_Scripts/Binary_Mask.png")
+    planner = RRT_star_planner("Webots_Scripts/Binary_Mask.png",0.5)
     start = [6,1]
-    goal = [8,9]
+    goal = [8,7]
     planner.setGoal(goal)
     planner.setStart(start)
     path = planner.RRT()
