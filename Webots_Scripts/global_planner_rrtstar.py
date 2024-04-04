@@ -12,7 +12,10 @@ class Node:
         self.parent = parent
         self.cost = 0
     def update_cost(self):
-        self.cost = self.parent.cost + np.sqrt((self.y - self.parent.y)**2 + (self.x - self.parent.x)**2)
+        if self.parent:
+            self.cost = self.parent.cost + np.sqrt((self.y - self.parent.y)**2 + (self.x - self.parent.x)**2)
+        else:
+            self.cost = 0
     def distance(self, node):
         return np.sqrt((self.y - node.y)**2 + (self.x - node.x)**2)
 
@@ -116,6 +119,7 @@ class RRT_star_planner:
         path = []
         while node != None:
             path.append([node.x,node.y])
+            node.update_cost()
             node = node.parent
         return path[::-1]
     
@@ -125,7 +129,7 @@ class RRT_star_planner:
     def setGoal(self,goal):
         self.goal = goal
 
-    def RRT(self,mode = True,radius = 0.1, goal_bias = 0.05):
+    def RRT(self,mode = False,radius = 0.1, goal_bias = 0.05):
         self.radius = radius
         self.fast_goal = False
         self.node_list = [] 
@@ -135,11 +139,11 @@ class RRT_star_planner:
         self.goal_found = False
         path_length_prev = 10000
         optimal_threshold = 0.01
-        path_stagnant_count = 0
+        path_stagnant = False
         found_iters = 0
         flag = 0
 
-        while(not(self.goal_found) or found_iters<1000):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
+        while(not(self.goal_found) or not(path_stagnant)):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
             p = np.random.random()
             goal_sampled = False
             if  p > goal_bias:
@@ -186,6 +190,12 @@ class RRT_star_planner:
                 # self.displayPath(path)
                 path_length = goal_node.cost
                 found_iters += 1
+                print(path_length)
+                if found_iters > 2000:
+                    path_improvement = path_length_prev - path_length
+                    if path_improvement<0.005:
+                        path_stagnant = True
+                    path_length_prev = path_length
 
                 # path_decrement = path_length_prev - path_length
                 # path_length_prev = path_length
