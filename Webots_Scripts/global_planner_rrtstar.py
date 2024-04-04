@@ -136,9 +136,10 @@ class RRT_star_planner:
         path_length_prev = 10000
         optimal_threshold = 0.01
         path_stagnant_count = 0
+        found_iters = 0
         flag = 0
 
-        while(not(self.goal_found) or path_stagnant_count<50):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
+        while(not(self.goal_found) or found_iters<1000):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
             p = np.random.random()
             goal_sampled = False
             if  p > goal_bias:
@@ -168,20 +169,33 @@ class RRT_star_planner:
             
             if self.goal_found:
                 tree = KDTree([(node.x,node.y) for node in self.node_list])
-                _, parent_index = tree.query(goal)
-                goal_node = Node(self.goal[0], self.goal[1], self.node_list[parent_index])
+                nearest_point_indices = tree.query_ball_point(self.goal, self.radius)
+                if nearest_point_indices:
+                    min_path = 100
+                    min_index = 0
+                    for i in nearest_point_indices:
+                        if self.node_list[i].cost < min_path:
+                            min_path = self.node_list[i].cost
+                            min_index = i
+                    goal_node = Node(self.goal[0], self.goal[1], self.node_list[min_index])
+                else:
+                    _,parent_index = tree.query(self.goal)
+                    goal_node = Node(self.goal[0], self.goal[1], self.node_list[parent_index])
                 goal_node.update_cost()
                 path = self.generate_path(goal_node)
                 # self.displayPath(path)
                 path_length = goal_node.cost
-                path_decrement = path_length_prev - path_length
-                path_length_prev = path_length
-                if path_decrement < optimal_threshold and flag:
-                    path_stagnant_count += 1
-                    flag = 1
-                else:
-                    flag = 0
-            print(path_length_prev)
+                found_iters += 1
+
+                # path_decrement = path_length_prev - path_length
+                # path_length_prev = path_length
+                # print(path_stagnant_count)
+                # if path_decrement < optimal_threshold and flag:
+                #     path_stagnant_count += 1
+                #     flag = 1
+                # else:
+                #     flag = 0
+            # print(path_length_prev)
             if mode and self.goal_found:
                 self.displayPoints(self.node_list, path)
             elif mode:
