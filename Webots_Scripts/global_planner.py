@@ -109,6 +109,7 @@ class RRT_planner:
         curr_node = Node(self.start[0],self.start[1],parent=None)
         self.node_list.append(curr_node)
         goal_found = False
+        
         while(not(self.goal_check(self.node_list[-1]) or goal_found)):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
             p = np.random.random()
             goal_sampled = False
@@ -136,6 +137,7 @@ class RRT_planner:
                     if self.fast_goal:    #Check if no obstacle to goal, then shoot into goal. 
                         if not(self.collision_check(self.goal[0], self.goal[1], child.x, child.y)):
                             goal_found = True
+
             if mode:
                 self.displayPoints(self.node_list)
         self.node_list.append(Node(self.goal[0], self.goal[1], self.node_list[-1]))

@@ -27,13 +27,13 @@ class RRT_star_planner:
         x = min(self.shape[1]-1,int(self.shape[1] - point[1]/10*self.shape[1]))
         return x,y 
 
-    def displayPoints(self, Nodes):
+    def displayPoints(self, Nodes, path = None):
         x_len = [a.x/10*self.shape[0] for a in Nodes]
         y_len = [self.shape[1] - a.y/10*self.shape[1] for a in Nodes]
         cv2.imwrite("Image.png",self.map_image)
         image1 = cv2.imread("Image.png")
         for i in range(len(x_len)):
-            image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 5, (0,255,0), -1)
+            image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 2, (0,255,0), -1)
             node = Nodes[i]
             if i>=1:
                 line_start = self.ctop((node.x,node.y))[::-1]
@@ -44,6 +44,12 @@ class RRT_star_planner:
         cv2.circle(image1,(start_p[1], start_p[0]), 5, (255,0,0), -1)
         cv2.circle(image1,(goal_p[1], goal_p[0]), 5, (0,0,255), -1)
         bigger = cv2.resize(image1, (1050, 1610))
+
+        if self.goal_found:
+            for i in range(1,len(path)):
+                line_start = self.ctop((path[i][0],path[i][1]))[::-1]
+                line_end = self.ctop((path[i-1][0],path[i-1][1]))[::-1]
+                cv2.line(image1, line_start, line_end, (0,0,0), 3)
         cv2.imshow("Nodes", image1)
         cv2.waitKey(10)
 
@@ -80,8 +86,9 @@ class RRT_star_planner:
         # points = [self.node_list[index] for index in nearest_point_indices]
         for i in nearest_point_indices:
             if self.node_list[i].cost >  new_node.cost + new_node.distance(self.node_list[i]):
-                self.node_list[i].parent = new_node
-                self.node_list[i].update_cost()
+                if not(self.collision_check(self.node_list[i].x,self.node_list[i].y,new_node.x,new_node.y)):
+                    self.node_list[i].parent = new_node
+                    self.node_list[i].update_cost()
 
     def generate_node(self, sampled_pt):
         tree = KDTree([(node.x,node.y) for node in self.node_list])
@@ -122,12 +129,16 @@ class RRT_star_planner:
         self.radius = radius
         self.fast_goal = False
         self.node_list = [] 
-        self.goal_found = False
 
         curr_node = Node(self.start[0],self.start[1],parent=None)
         self.node_list.append(curr_node)
-        goal_found = False
-        while(True):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
+        self.goal_found = False
+        path_length_prev = 10000
+        optimal_threshold = 0.01
+        path_stagnant_count = 0
+        flag = 0
+
+        while(not(self.goal_found) or path_stagnant_count<50):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
             p = np.random.random()
             goal_sampled = False
             if  p > goal_bias:
@@ -150,16 +161,31 @@ class RRT_star_planner:
             else:
                 self.node_list.append(child)
                 if goal_sampled:
-                    goal_found = self.goal_check(child)  #to check if the goal is less than 'radius' away. 
+                    self.goal_found = self.goal_check(child)  #to check if the goal is less than 'radius' away. 
                     if self.fast_goal:    #Check if no obstacle to goal, then shoot into goal. 
                         if not(self.collision_check(self.goal[0], self.goal[1], child.x, child.y)):
-                            goal_found = True
-            if mode:
+                            self.goal_found = True
+            
+            if self.goal_found:
+                tree = KDTree([(node.x,node.y) for node in self.node_list])
+                _, parent_index = tree.query(goal)
+                goal_node = Node(self.goal[0], self.goal[1], self.node_list[parent_index])
+                goal_node.update_cost()
+                path = self.generate_path(goal_node)
+                # self.displayPath(path)
+                path_length = goal_node.cost
+                path_decrement = path_length_prev - path_length
+                path_length_prev = path_length
+                if path_decrement < optimal_threshold and flag:
+                    path_stagnant_count += 1
+                    flag = 1
+                else:
+                    flag = 0
+            print(path_length_prev)
+            if mode and self.goal_found:
+                self.displayPoints(self.node_list, path)
+            elif mode:
                 self.displayPoints(self.node_list)
-                path = self.generate_path(self.node_list[-1])
-                self.displayPath(path)
-        self.node_list.append(Node(self.goal[0], self.goal[1], self.node_list[-1]))
-        path = self.generate_path(self.node_list[-1])
         return path
 
 # def RRT_explore(node_list,goal,image,radius = 1):
