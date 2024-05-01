@@ -19,7 +19,7 @@ agent2.enable(10)
 agent3.enable(10)
 
 iteration = 0
-goals = np.asarray([[2.5,5],[3.5,9],[3.5,8]])
+goals = np.asarray([[4.5,5],[4.5,6],[3.5,9.5]])
 
 def getCostMatrix(goals,coords):
     cost = np.zeros((len(goals),len(goals)))
@@ -46,7 +46,7 @@ while robot.step(timestep) != -1:
     #print(coord1)
     coords.append(coord1)
     coord2 = comms.getAgent2()
-    coords.append(coord2)
+    coords.append(coord2[:3])
     #print(coord2)
     coord3 = comms.getAgent3()
     coords.append(coord3)

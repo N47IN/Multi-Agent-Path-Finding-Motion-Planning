@@ -63,7 +63,8 @@ ma_points = ccma.filter(points, cc_mode=False)
 print(ma_points)
 
 # Visualize results
-plt.plot(*ma_points.T, linewidth=2, alpha=0.5, color="green", label=f"ma-smoothed ({w_ma})")
+plt.plot(points[:,0],points[:,1])
+plt.plot(*ma_points.T, linewidth=2, alpha=0.5, color="green", label=f"smoothed ({w_ma})")
 
 # General settings
 plt.grid(True)
@@ -73,6 +74,6 @@ plt.tight_layout()
 plt.gcf().set_size_inches(12, 6)
 plt.xlabel("x")
 plt.ylabel("y")
-plt.title("CCMA - Example 1 (2d)")
+plt.title("Curvature Corrected Moving Average")
 
 plt.show()

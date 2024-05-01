@@ -8,7 +8,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/robotis/turtlebot/protos/TurtleBot3Burger.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3at.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/velodyne/protos/VelodyneVLP-16.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/robotis/protos/RobotisLds01.proto"
 
 WorldInfo {
   info [
@@ -19,8 +19,8 @@ WorldInfo {
   gpsReference 5 5 0
 }
 Viewpoint {
-  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position -1.2862621190584768e-06 -1.286265759956744e-06 22.403925415389107
+  orientation -0.3620862102248615 -0.1572016562131133 0.9187933476298418 3.9007142627668108
+  position 6.509002908058422 6.576721441974957 8.736310961454123
   follow "Agent1"
   followType "None"
   followSmoothness 0
@@ -94,14 +94,11 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 Pioneer3at {
-  translation -4.630000027260336 4.669999980755677 -0.0012963699549810581
-  rotation 0.0035650750198113904 0.9999936450986321 1.5665143218651024e-06 0.0007933748258110776
+  translation -4.630000027410327 4.669999980882289 -0.0012117295599440303
+  rotation -0.02344025074655793 0.9997252393285481 2.2235465335777943e-05 2.502629083449795e-05
   name "Admin"
   controller "<extern>"
   extensionSlot [
-    VelodyneVLP-16 {
-      translation 0.16 0 0.31
-    }
     Emitter {
     }
     Receiver {
@@ -119,7 +116,7 @@ Pioneer3at {
   ]
 }
 WoodenBox {
-  translation -1.60604 0.480567 0.3
+  translation -1.60604 0.480567 0.25
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(5)"
   size 0.5 0.5 0.5
@@ -143,7 +140,7 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 WoodenBox {
-  translation -1.63478 0.919628 0.3
+  translation -1.63478 0.919628 0.27
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(35)"
   size 0.5 0.5 0.5
@@ -155,7 +152,7 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 WoodenBox {
-  translation -3.7018 0.343227 0.3
+  translation -3.7018 0.343227 0.27
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(16)"
   size 0.5 0.5 0.5
@@ -197,7 +194,7 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 WoodenBox {
-  translation -1.50203 -1.10604 0.3
+  translation -1.50203 -1.10604 0.25
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(6)"
   size 0.5 0.5 0.5
@@ -269,7 +266,7 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 WoodenBox {
-  translation -1.70122 3.55952 0.3
+  translation -1.70122 3.55952 0.23
   rotation 0 0 1 0.589044
   name "wooden box(28)"
   size 0.5 0.5 0.5
@@ -359,11 +356,13 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 TurtleBot3Burger {
-  translation -0.2675649949486485 -4.378790212191186 -0.0005544265189671299
-  rotation -0.001078892005877362 -0.001104815616416376 -0.9999988076865358 1.546998167164164
+  translation -0.255564 -4.43256 0.00335221
+  rotation -0.001162886910054694 -0.0010461763505379969 -0.9999987766037908 1.6720611070458011
   name "Agent1"
   controller "<extern>"
   extensionSlot [
+    RobotisLds01 {
+    }
     InertialUnit {
     }
     Receiver {
@@ -385,11 +384,13 @@ TurtleBot3Burger {
   ]
 }
 TurtleBot3Burger {
-  translation 0.9677034816570083 -4.5299999951844665 -0.00010674371659841891
-  rotation -8.103558073402867e-06 -0.9999999999142622 1.0286296497276009e-05 0.0022129074882548776
+  translation 2.02771 -3.77385 0.00556904
+  rotation -0.0012875234505467445 -0.0012825425956729203 -0.9999983486825639 1.5707956014074997
   name "Agent2"
   controller "<extern>"
   extensionSlot [
+    RobotisLds01 {
+    }
     InertialUnit {
     }
     Receiver {
@@ -411,11 +412,13 @@ TurtleBot3Burger {
   ]
 }
 TurtleBot3Burger {
-  translation 1.7786767721482495 -4.5164803609637705 -0.0001067437166292727
-  rotation -0.001104133438391841 -0.0735862492406578 -0.9972882456000584 0.030070038344051576
+  translation 0.818229 -4.17719 0.00567696
+  rotation -0.0013213157997737253 -0.07704662309178173 -0.997026615489632 0.030077922085669104
   name "Agent3"
   controller "<extern>"
   extensionSlot [
+    RobotisLds01 {
+    }
     InertialUnit {
     }
     Receiver {

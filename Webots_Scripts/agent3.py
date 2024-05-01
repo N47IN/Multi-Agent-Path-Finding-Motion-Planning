@@ -2,11 +2,12 @@
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
-from global_planner import RRT_planner
+from global_planner import RRT_star_planner
 import numpy as np
 from Comms import comms
 from ccma import CCMA
 from pure_pursuit import PP
+import math
 
 # create the Robot instance.
 robot = Robot()
@@ -40,7 +41,7 @@ timestep = 10
 data = [20]
 timestep = int(robot.getBasicTimeStep())
 
-g_planner = RRT_planner("Binary_Mask.png")
+g_planner = RRT_star_planner("Binary_Mask.png",0.5)
 comms = comms(agent1= agent1,agent2=agent2, Admin=admin)
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
@@ -65,7 +66,7 @@ path = False
 start_time = robot.getTime()
 v = 0
 time = 0
-velocity = 0
+velocity = 1
 
 while robot.step(timestep) != -1:
     position = gps.getValues()
@@ -86,6 +87,7 @@ while robot.step(timestep) != -1:
         #print(g_plan)
         
     if path == True:
+        broadcast([position[0],position[1],velocity, yaw])
         if np.linalg.norm(position[0:2] - goal) > 0.05 :
             
             

@@ -2,7 +2,7 @@
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
-from global_planner import RRT_planner
+from global_planner import RRT_star_planner
 import numpy as np
 from Comms import comms
 from ccma import CCMA
@@ -30,7 +30,7 @@ agent2.enable(10)
 agent3.enable(10)
 
 comms = comms(agent2= agent2,agent3=agent3, Admin=admin)
-g_planner = RRT_planner("Binary_Mask.png")
+g_planner = RRT_star_planner("Binary_Mask.png",0.5)
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
 right_motor.setPosition(float('inf'))
@@ -49,8 +49,8 @@ def broadcast(data):
     
 def steer(data,v):
     speed = data*0.10/(0.5*0.8)
-    right_motor.setVelocity(-10*v -3*speed)
-    left_motor.setVelocity(-10*v +3*speed)
+    right_motor.setVelocity(-8*v -3*speed)
+    left_motor.setVelocity(-8*v +3*speed)
 
     
 def rnd(number, precision=4):
@@ -80,7 +80,7 @@ while robot.step(timestep) != -1:
         print("goal Agent1 :",goal)
         g_planner.setStart(position[0:2])
         g_planner.setGoal([ goal[0], goal[1]])
-        global_path = np.asarray(g_planner.RRT(mode=True))
+        global_path = np.asarray(g_planner.RRT())
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
         path = True
         tracker = PP(g_plan_smoothed,yaw)
