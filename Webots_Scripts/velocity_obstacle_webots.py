@@ -19,7 +19,6 @@ class RVO:
         self.obstacles = create_obstacle(rob,obs1,obs2,SIM_TIME, NUMBER_OF_TIMESTEPS)
         
     def simulate(self,rob,filename="MAPF"):
-        
         start = np.array(rob)
         goal = self.goal
         robot_state = np.asarray([rob[0],rob[1],rob[2]*math.cos(rob[3]),rob[2]*math.sin(rob[3])])
@@ -27,7 +26,6 @@ class RVO:
         v_desired = compute_desired_velocity(robot_state, goal, ROBOT_RADIUS, VMAX)
         v, theta = self.compute_velocity(
             robot_state, self.obstacles[:, :], v_desired)
-        
         return v, theta
 
 

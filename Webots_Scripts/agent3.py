@@ -2,7 +2,7 @@
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
-from global_planner import RRT_star_planner
+from global_planner_rrtstar import RRT_star_planner
 import numpy as np
 from Comms import comms
 from ccma import CCMA
@@ -70,9 +70,11 @@ velocity = 1
 
 while robot.step(timestep) != -1:
     position = gps.getValues()
-    broadcast(position)
     yaw = Yaw.getRollPitchYaw()
     yaw = yaw[2]
+    if path != True:
+        broadcast([position[0],position[1],-0.2, yaw])
+    
     
     if admin.getQueueLength()>0 and path==False:
         goal = comms.getAdmin()[4:6]

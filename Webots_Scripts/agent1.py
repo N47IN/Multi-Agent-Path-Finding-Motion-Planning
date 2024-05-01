@@ -2,7 +2,7 @@
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
-from global_planner import RRT_star_planner
+from global_planner_rrtstar import RRT_star_planner
 import numpy as np
 from Comms import comms
 from ccma import CCMA

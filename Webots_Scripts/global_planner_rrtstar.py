@@ -191,7 +191,7 @@ class RRT_star_planner:
                 path_length = goal_node.cost
                 found_iters += 1
                 print(path_length)
-                if found_iters > 1000:
+                if found_iters > 2000:
                     path_improvement = path_length_prev - path_length
                     if path_improvement<0.005:
                         path_stagnant = True

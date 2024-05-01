@@ -4,7 +4,7 @@ from multiprocessing.spawn import import_main_path
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
-from global_planner import RRT_star_planner
+from global_planner_rrtstar import RRT_star_planner
 import numpy as np
 from Comms import comms
 from ccma import CCMA
@@ -98,3 +98,4 @@ while robot.step(timestep) != -1:
                 steer(steering_angle,velocity)
             except:
                 steer(0,0)
+    

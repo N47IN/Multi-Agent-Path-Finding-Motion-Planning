@@ -2,7 +2,7 @@
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
-from global_planner import RRT_planner
+from global_planner_rrtstar import RRT_star_planner
 import numpy as np
 from velocity_obstacle_webots import RVO
 from Comms import comms
@@ -32,7 +32,7 @@ agent2.enable(10)
 agent3.enable(10)
 
 comms = comms(agent2= agent2,agent3=agent3, Admin=admin)
-g_planner = RRT_planner("Binary_Mask.png")
+g_planner = RRT_star_planner("Binary_Mask.png",0.5)
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
 right_motor.setPosition(float('inf'))
@@ -85,7 +85,7 @@ while robot.step(timestep) != -1:
         print("goal Agent1 :",goal)
         g_planner.setStart(position[0:2])
         g_planner.setGoal([ goal[0], goal[1]])
-        global_path = np.asarray(g_planner.RRT(mode=True))
+        global_path = np.asarray(g_planner.RRT())
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
         path = True
         tracker = PP(g_plan_smoothed,yaw)
@@ -102,15 +102,11 @@ while robot.step(timestep) != -1:
             
             if getDist(agent2,position) < 0.5 or getDist(agent3,position)< 0.5:
                 velocity, steering_angle = rvo.simulate(agent1)
-                steer(steering_angle,velocity)
+                steer(5*steering_angle,2*velocity)
                 print(steering_angle,velocity)
                 print("obsooo")
             else:
-             try :
-                velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
-                steer(steering_angle,velocity)
-             except:
-                steer(0,0)
+                steer(0,0.2/8)
                 
 
         
