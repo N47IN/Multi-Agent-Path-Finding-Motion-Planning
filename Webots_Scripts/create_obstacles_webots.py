@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 
 def getDist(pos,obs):
     return np.linalg.norm(pos[0:2]-obs[0:2])

@@ -1,5 +1,6 @@
 from multi_robot_plot import plot_robot_and_obstacles
 from create_obstacles_webots import create_obstacle
+from create_obst_from_img import create_obstacles_from_img
 from control import compute_desired_velocity
 import numpy as np
 import math
@@ -14,9 +15,9 @@ VMIN = 0.2
 
 class RVO:
     
-    def __init__(self,goal,rob,obs1,obs2):
+    def __init__(self,goal,rob, image):
         self.goal = np.asarray([goal[0],goal[1],0,0])
-        self.obstacles = create_obstacle(rob,obs1,obs2,SIM_TIME, NUMBER_OF_TIMESTEPS)
+        self.obstacles = create_obstacles_from_img(image,SIM_TIME, NUMBER_OF_TIMESTEPS)
         
     def simulate(self,rob,filename="MAPF"):
         start = np.array(rob)
