@@ -30,7 +30,7 @@ agent2.enable(10)
 agent3.enable(10)
 
 comms = comms(agent2= agent2,agent3=agent3, Admin=admin)
-g_planner = RRT_star_planner("Binary_Mask.png",0.5)
+g_planner = RRT_star_planner("Binary_Mask.png",0.5, "image1.png")
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
 right_motor.setPosition(float('inf'))
@@ -67,7 +67,7 @@ velocity = 0
 while robot.step(timestep) != -1:
     position = gps.getValues()
     
-
+    
     #print(position)
     broadcast(position)
     yaw = Yaw.getRollPitchYaw()
@@ -78,9 +78,13 @@ while robot.step(timestep) != -1:
         goal = comms.getAdmin()[0:2]
         print("current position Agent1 :",position[0:2])
         print("goal Agent1 :",goal)
-        g_planner.setStart(position[0:2])
-        g_planner.setGoal([ goal[0], goal[1]])
-        global_path = np.asarray(g_planner.RRT())
+        g_planner.setGoal(position[0:2])
+        g_planner.setStart([ goal[0], goal[1]])
+        print(position[0:2])
+        print([ goal[0], goal[1]])
+        global_path, nodes = g_planner.RRT()
+        global_path = np.asarray(global_path)
+        print(global_path)
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
         path = True
         tracker = PP(g_plan_smoothed,yaw)

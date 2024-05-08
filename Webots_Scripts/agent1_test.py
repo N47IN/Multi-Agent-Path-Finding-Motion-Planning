@@ -1,4 +1,6 @@
-# Talks at channel 2
+# Talks at channel 1
+
+from multiprocessing.spawn import import_main_path
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
@@ -6,8 +8,8 @@ from global_planner_rrtstar import RRT_star_planner
 import numpy as np
 from Comms import comms
 from ccma import CCMA
-from pure_pursuit import PP
 import math
+from pure_pursuit import PP
 
 # create the Robot instance.
 robot = Robot()
@@ -17,8 +19,8 @@ Yaw = robot.getDevice("inertial unit")
 
 right_motor = robot.getDevice("right wheel motor")
 left_motor = robot.getDevice("left wheel motor")
-agent1 = robot.getDevice("receiver_agent1")
 agent2 = robot.getDevice("receiver_agent2")
+agent3 = robot.getDevice("receiver_agent3")
 emitter = robot.getDevice("emitter")
 admin = robot.getDevice("receiver_admin")
 admin.enable(10)
@@ -29,8 +31,8 @@ gps.enable(10)
 Yaw.enable(10)
 
 keyboard.enable(10)
-agent1.enable(10)
 agent2.enable(10)
+agent3.enable(10)
 
 right_motor.setPosition(float('inf'))
 left_motor.setPosition(float('inf'))
@@ -41,8 +43,8 @@ timestep = 10
 data = [20]
 timestep = int(robot.getBasicTimeStep())
 
-g_planner = RRT_star_planner("Binary_Mask.png",0.5, "image3.png")
-comms = comms(agent1= agent1,agent2=agent2, Admin=admin)
+g_planner = RRT_star_planner("Binary_Mask.png",0.5, "image2.png")
+comms = comms(agent2= agent2,agent3=agent3, Admin=admin)
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
 def broadcast(data):
@@ -70,14 +72,13 @@ velocity = 1
 
 while robot.step(timestep) != -1:
     position = gps.getValues()
+    
     yaw = Yaw.getRollPitchYaw()
     yaw = yaw[2]
-    if path != True:
-        broadcast([position[0],position[1],-0.2, yaw])
-    
+    broadcast([position[0],position[1],-0.2, yaw])
     
     if admin.getQueueLength()>0 and path==False:
-        goal = comms.getAdmin()[4:6]
+        goal = comms.getAdmin()[0:2]
         print("current position Agent2 :",position[0:2])
         print("goal Agent2 :",goal)
         g_planner.setGoal(position[0:2])
@@ -90,12 +91,12 @@ while robot.step(timestep) != -1:
         #print(g_plan)
         
     if path == True:
-        broadcast([position[0],position[1],velocity, yaw])
         if np.linalg.norm(position[0:2] - goal) > 0.05 :
-            
-            
+            time2 = robot.getTime() - start_time
+
             try :
                 velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
                 steer(steering_angle,velocity)
             except:
                 steer(0,0)
+    
