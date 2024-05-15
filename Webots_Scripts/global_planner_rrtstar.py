@@ -4,6 +4,7 @@ import matplotlib.path as mplPath
 from scipy.spatial import KDTree
 import cv2
 import random
+import time
 
 class Node:
     def __init__(self,x,y, parent):
@@ -20,10 +21,11 @@ class Node:
         return np.sqrt((self.y - node.y)**2 + (self.x - node.x)**2)
 
 class RRT_star_planner:
-    def __init__(self, map_image_src, rewire_radius):
+    def __init__(self, map_image_src, rewire_radius, new_img):
         self.map_image = cv2.imread(map_image_src)
         self.shape = self.map_image.shape[:2]
         self.rewire_radius = rewire_radius
+        self.new_img = new_img
     
     def ctop(self, point):
         y = min(self.shape[0]-1,int(point[0]/10*self.shape[0]))
@@ -33,8 +35,8 @@ class RRT_star_planner:
     def displayPoints(self, Nodes, path = None):
         x_len = [a.x/10*self.shape[0] for a in Nodes]
         y_len = [self.shape[1] - a.y/10*self.shape[1] for a in Nodes]
-        cv2.imwrite("Image.png",self.map_image)
-        image1 = cv2.imread("Image.png")
+        cv2.imwrite(self.new_img,self.map_image)
+        image1 = cv2.imread(self.new_img)
         for i in range(len(x_len)):
             image1 = cv2.circle(image1,(int(x_len[i]), int(y_len[i])), 2, (0,255,0), -1)
             node = Nodes[i]
@@ -57,8 +59,8 @@ class RRT_star_planner:
         cv2.waitKey(10)
 
     def displayPath(self, path):
-        cv2.imwrite("Image.png",self.map_image)
-        image1 = cv2.imread("Image.png")
+        cv2.imwrite(self.new_img,self.map_image)
+        image1 = cv2.imread(self.new_img)
         for i in range(1,len(path)):
             line_start = self.ctop((path[i][0],path[i][1]))[::-1]
             line_end = self.ctop((path[i-1][0],path[i-1][1]))[::-1]
@@ -129,7 +131,7 @@ class RRT_star_planner:
     def setGoal(self,goal):
         self.goal = goal
 
-    def RRT(self,mode = False,radius = 0.1, goal_bias = 0.05):
+    def RRT(self,mode = True,radius = 0.1, goal_bias = 0.05, runTime = 2):
         self.radius = radius
         self.fast_goal = False
         self.node_list = [] 
@@ -137,13 +139,16 @@ class RRT_star_planner:
         curr_node = Node(self.start[0],self.start[1],parent=None)
         self.node_list.append(curr_node)
         self.goal_found = False
+        self.goal_done = False #this will make the planner stop 2 seconds after goal has been found
+        self.goal_flag = True
+        found_time = 0
         path_length_prev = 10000
         optimal_threshold = 0.01
         path_stagnant = False
         found_iters = 0
         flag = 0
-
-        while(not(self.goal_found) or not(path_stagnant)):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
+        while(not(self.goal_found) or not(path_stagnant) or len(self.node_list) < 4000):   #goal_found is added just for the corner case of goal lying between 2 nodes due to too large radius. 
+            # print(len(self.node_list))
             p = np.random.random()
             goal_sampled = False
             if  p > goal_bias:
@@ -165,6 +170,7 @@ class RRT_star_planner:
                 continue
             else:
                 self.node_list.append(child)
+                print(child.x,child.y)
                 if goal_sampled:
                     self.goal_found = self.goal_check(child)  #to check if the goal is less than 'radius' away. 
                     if self.fast_goal:    #Check if no obstacle to goal, then shoot into goal. 
@@ -172,6 +178,14 @@ class RRT_star_planner:
                             self.goal_found = True
             
             if self.goal_found:
+                if self.goal_flag:
+                    found_time = time.time()
+                    self.goal_flag = False
+
+                if time.time() - found_time > runTime:
+                    # print("found", time.time() - found_time)
+                    self.goal_done = True
+
                 tree = KDTree([(node.x,node.y) for node in self.node_list])
                 nearest_point_indices = tree.query_ball_point(self.goal, self.radius)
                 if nearest_point_indices:
@@ -190,7 +204,7 @@ class RRT_star_planner:
                 # self.displayPath(path)
                 path_length = goal_node.cost
                 found_iters += 1
-                print(path_length)
+                # print(path_length)
                 if found_iters > 2000:
                     path_improvement = path_length_prev - path_length
                     if path_improvement<0.005:
@@ -206,11 +220,11 @@ class RRT_star_planner:
                 # else:
                 #     flag = 0
             # print(path_length_prev)
-            if mode and self.goal_found:
-                self.displayPoints(self.node_list, path)
-            elif mode:
-                self.displayPoints(self.node_list)
-        return path
+                if mode and self.goal_found:
+                    self.displayPoints(self.node_list, path)
+                elif mode:
+                    self.displayPoints(self.node_list)
+        return path, self.node_list
 
 # def RRT_explore(node_list,goal,image,radius = 1):
 #         print("EXPLORING")

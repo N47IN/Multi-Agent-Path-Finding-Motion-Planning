@@ -19,7 +19,7 @@ agent2.enable(10)
 agent3.enable(10)
 
 iteration = 0
-goals = np.asarray([[4.5,5],[4.5,6],[3.5,9.5]])
+goals = np.asarray([[4,6],[5,7],[9,9]])
 
 def getCostMatrix(goals,coords):
     cost = np.zeros((len(goals),len(goals)))
@@ -61,6 +61,7 @@ while robot.step(timestep) != -1:
     goals = [goals[i] for i in c]
     ''' for i in range(len(goals)):
         list(goals[i]).append(float(i)) '''
+    print(goals)
     broadcast(goals)
   iteration+=1
 

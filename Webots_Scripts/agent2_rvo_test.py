@@ -43,7 +43,7 @@ timestep = 10
 data = [20]
 timestep = int(robot.getBasicTimeStep())
 
-g_planner = RRT_star_planner("Binary_Mask.png",0.5, "image2.png")
+g_planner = RRT_star_planner("Binary_Mask.png",0.5)
 comms = comms(agent1= agent1,agent3=agent3, Admin=admin)
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
@@ -76,15 +76,13 @@ while robot.step(timestep) != -1:
     yaw = Yaw.getRollPitchYaw()
     yaw = yaw[2]
     broadcast([position[0],position[1],-0.2, yaw])
-    
-    if admin.getQueueLength()>0 and path==False:
+    ''' if admin.getQueueLength()>0 and path==False:
         goal = comms.getAdmin()[2:4]
         print("current position Agent2 :",position[0:2])
         print("goal Agent2 :",goal)
-        g_planner.setGoal(position[0:2])
-        g_planner.setStart([ goal[0], goal[1]])
-        global_path = np.asarray(g_planner.RRT(mode = False))
-        print(global_path)
+        g_planner.setStart(position[0:2])
+        g_planner.setGoal([ goal[0], goal[1]])
+        global_path = np.asarray(g_planner.RRT())
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
         path = True
         tracker = PP(g_plan_smoothed,yaw)
@@ -98,5 +96,5 @@ while robot.step(timestep) != -1:
                 velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
                 steer(steering_angle,velocity)
             except:
-                steer(0,0)
-    
+                steer(0,0) '''
+    steer(0,0.2/8)
