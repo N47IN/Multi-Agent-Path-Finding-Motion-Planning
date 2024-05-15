@@ -98,3 +98,11 @@ while robot.step(timestep) != -1:
                 steer(steering_angle,velocity)
             except:
                 steer(0,0)
+                
+                
+'''                 def plan(position,goal):
+        g_planner.setStart(position[0:2])
+    g_planner.setGoal([ goal[0], goal[1]])
+    global_path = np.asarray(g_planner.RRT())
+    g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
+    return g_plan_smoothed '''

@@ -18,35 +18,20 @@ def create_obstacles_from_img(image,sim_time, num_timesteps):
 
     keypoints = detector.detect(image)
     blank = np.zeros((1, 1))
-    obstacles = []
+    obstacles = None
     for keyPoint in keypoints:
         x = int(keyPoint.pt[0])
         y = int(keyPoint.pt[1])
         s = int(keyPoint.size)
-        obst = create_robot((x,y), 0, 0, sim_time,num_timesteps).reshape(4, num_timesteps, 1)
+        pos = np.asarray([x,y])
+        obst = create_robot(pos, 0, 0, sim_time,num_timesteps).reshape(4, num_timesteps, 1)
+        if obstacles is None:
+            obstacles = obst
         obstacles = np.dstack((obstacles, obst))
-    
-
-# def create_obstacle(pos,state1,state2, sim_time, num_timesteps):
-#     """
-#     Creates obstacles for the simulation.
-#     """
-#     if getDist(state1,pos) < 1.6 :
-#         # Obstacle 1
-#         p0 = np.array([state1[0], state1[1]])
-#         #print(state1)
-#         obst = create_robot(p0, state1[2], state1[3], sim_time,
-#                             num_timesteps).reshape(4, num_timesteps, 1)
-#         obstacles = obst
-    
-#     if getDist(state2,pos) < 1.6 :
-#         p0 = np.array([state2[0], state2[1]])
-#         obst = create_robot(p0, state2[2], state2[3], sim_time,
-#                             num_timesteps).reshape(4, num_timesteps, 1)
-#         if obstacles is None:
-#             obstacles = obst
-#         obstacles = np.dstack((obstacles, obst))
-#     return obstacles
+        cv2.circle(image, (x,y), s//2, (0,255,0), 2)
+    cv2.imshow("Detected Circles", image)
+    cv2.waitKey(500)
+    return obstacles
 
 
 def create_robot(p0, v, theta, sim_time, num_timesteps):
@@ -60,3 +45,4 @@ def create_robot(p0, v, theta, sim_time, num_timesteps):
     p = p0 + np.cumsum(v, axis=1) * (sim_time / num_timesteps)
     p = np.concatenate((p, v))
     return p
+

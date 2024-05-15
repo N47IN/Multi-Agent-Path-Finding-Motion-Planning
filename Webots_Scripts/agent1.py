@@ -80,7 +80,7 @@ while robot.step(timestep) != -1:
         print("goal Agent1 :",goal)
         g_planner.setStart(position[0:2])
         g_planner.setGoal([ goal[0], goal[1]])
-        global_path = np.asarray(g_planner.RRT())
+        global_path = np.asarray(g_planner.RRT(mode = False))
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
         path = True
         tracker = PP(g_plan_smoothed,yaw)

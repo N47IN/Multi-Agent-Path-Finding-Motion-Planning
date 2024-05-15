@@ -28,6 +28,7 @@ gps.enable(10)
 keyboard.enable(10)
 Yaw.enable(10)
 admin.enable(10)
+#emitter.enable(10)
 agent2.enable(10)
 agent3.enable(10)
 
@@ -57,7 +58,13 @@ def steer(data,v):
     right_motor.setVelocity(-8*v -6*speed)
     left_motor.setVelocity(-8*v +6*speed)
 
-    
+def plan(position,goal):
+    g_planner.setStart(position[0:2])
+    g_planner.setGoal([ goal[0], goal[1]])
+    global_path = np.asarray(g_planner.RRT())
+    g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
+    return g_plan_smoothed
+
 def rnd(number, precision=4):
     if isinstance(number, (int, float)):
         return round(number, precision)
@@ -71,42 +78,59 @@ velocity = 1
 
 while robot.step(timestep) != -1:
     position = gps.getValues()
-    
-
-    #print(position)
-    broadcast(position)
     yaw = Yaw.getRollPitchYaw()
-    yaw = yaw[2] 
-
+    yaw = yaw[2]
+    agent1 = [position[0],position[1],velocity/5,yaw]
+    broadcast(agent1)
+    agent2 = comms.getAgent2()
+    agent3 = comms.getAgent3()
+    print(agent2,agent3)
+    
     
     if admin.getQueueLength()>0 and path==False:
         goal = comms.getAdmin()[0:2]
         print("current position Agent1 :",position[0:2])
         print("goal Agent1 :",goal)
-        g_planner.setStart(position[0:2])
-        g_planner.setGoal([ goal[0], goal[1]])
-        global_path = np.asarray(g_planner.RRT())
-        g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
+        g_plan_smoothed = plan(position,goal)
         path = True
+        Local = False
         tracker = PP(g_plan_smoothed,yaw)
+        rvo = RVO(goal,agent1,agent2,agent3)
         #print(g_plan)
         
-    if path == True:
-        agent2 = comms.getAgent2()
-        agent3 = comms.getAgent3()
-        agent1 = [position[0],position[1],velocity,yaw]
-        rvo = RVO(goal,agent1,agent2,agent3)
+    if path == True :
+        
         if np.linalg.norm(position[0:2] - goal) > 0.05 :
             time2 = robot.getTime() - start_time
-            broadcast(agent1)
-            
-            if getDist(agent2,position) < 0.5 or getDist(agent3,position)< 0.5:
-                velocity, steering_angle = rvo.simulate(agent1)
-                steer(5*steering_angle,2*velocity)
+            print("dist is", getDist(agent2,position),getDist(agent3,position))
+            if getDist(agent2,position) < 0.55 or getDist(agent3,position) < 0.55 :
+                Local = True
+                #rvo.update(agent1,agent2,agent3)
+                try:
+                    velocity, steering_angle = rvo.simulate(agent1,agent2,agent3)
+                except: 
+                    steer(velocity,steering_angle)
+                steer(steering_angle/5,velocity/5)
                 print(steering_angle,velocity)
-                print("obsooo")
+                print("Agent1 RVO")
+                
             else:
-                steer(0,0.2/8)
+                try :
+                    Local = False
+                    velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
+                    steer(steering_angle,velocity)
+                    print("Agent1 PP")
+                except:
+                    velocity = 0
+                    steer(0,0)
+                
+            if getDist(agent2,position) > 0.6 and getDist(agent3,position) > 0.6 :
+                if Local == True :
+                    Local = False
+                    g_plan_smoothed = plan(position,goal)
+                    tracker = PP(g_plan_smoothed,yaw)
+                
+            
                 
 
         

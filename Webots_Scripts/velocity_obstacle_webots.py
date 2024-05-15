@@ -4,22 +4,28 @@ from create_obst_from_img import create_obstacles_from_img
 from control import compute_desired_velocity
 import numpy as np
 import math
+import cv2
 
 SIM_TIME = 5.
 TIMESTEP = 0.1
 NUMBER_OF_TIMESTEPS = int(SIM_TIME/TIMESTEP)
-ROBOT_RADIUS = 0.05
+ROBOT_RADIUS = 0.1
 VMAX = 2
 VMIN = 0.2
 
-
 class RVO:
-    
-    def __init__(self,goal,rob, image):
+
+    def __init__(self,goal,rob,obs1,obs2):
         self.goal = np.asarray([goal[0],goal[1],0,0])
-        self.obstacles = create_obstacles_from_img(image,SIM_TIME, NUMBER_OF_TIMESTEPS)
+        self.obs1 = obs1
+        self.obs2 = obs2
+        self.rob = rob
+        image = cv2.imread("/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/Binary_Mask.png")
         
-    def simulate(self,rob,filename="MAPF"):
+        #self.obstacles = create_obstacles_from_img(image,SIM_TIME, NUMBER_OF_TIMESTEPS)
+        #self.obstacles = np.dstack((agent_obstacles,static_obstacles))        
+    def simulate(self,rob,obs1,obs2,filename="MAPF"):
+        self.obstacles = create_obstacle(rob,obs1,obs2,SIM_TIME, NUMBER_OF_TIMESTEPS)
         start = np.array(rob)
         goal = self.goal
         robot_state = np.asarray([rob[0],rob[1],rob[2]*math.cos(rob[3]),rob[2]*math.sin(rob[3])])
@@ -28,32 +34,41 @@ class RVO:
         v, theta = self.compute_velocity(
             robot_state, self.obstacles[:, :], v_desired)
         return v, theta
-
-
+    
+    def update(self,obs1,obs2,rob):
+        self.obstacles = create_obstacle(rob,obs1,obs2,SIM_TIME, NUMBER_OF_TIMESTEPS)
+        
 
     def compute_velocity(self,robot, obstacles, v_desired):
         pA = robot[:2]
         vA = robot[-2:]
+        print(np.shape(obstacles))
         # Compute the constraints for each velocity obstacles
         number_of_obstacles = np.shape(obstacles)[1]
         Amat = np.empty((number_of_obstacles * 2, 2))
         bvec = np.empty((number_of_obstacles * 2))
         for i in range(number_of_obstacles):
             obstacle = obstacles[:, i]
-            #print(obstacle)
-            pB = obstacle[:2][0]
-            vB = [obstacle[2][0]*math.cos(obstacle[3][0]),obstacle[2][0]*math.sin(obstacle[3][0])]
+
+            pB = obstacle[:2]
+            pB = [pB[0][0], pB[1][0]]
+            vB = obstacle[2:]
             dispBA = pA - pB
+
             distBA = np.linalg.norm(dispBA)
             thetaBA = np.arctan2(dispBA[1], dispBA[0])
+
             if 2.2 * ROBOT_RADIUS > distBA:
                 distBA = 2.2*ROBOT_RADIUS
             phi_obst = np.arcsin(2.2*ROBOT_RADIUS/distBA)
+
             phi_left = thetaBA + phi_obst
             phi_right = thetaBA - phi_obst
             # VO
             translation = vB
-            #print(translation)
+
+            translation = [translation[0],translation[1]]
+
             Atemp, btemp = self.create_constraints(translation, phi_left, "left")
             Amat[i*2, :] = Atemp
             bvec[i*2] = btemp
@@ -64,11 +79,16 @@ class RVO:
         # Create search-space
         th = np.linspace(0, 2*np.pi, 20)
         vel = np.linspace(0, VMAX, 5)
+
         vv, thth = np.meshgrid(vel, th)
+
         vx_sample = (vv * np.cos(thth)).flatten()
         vy_sample = (vv * np.sin(thth)).flatten()
+
         v_sample = np.stack((vx_sample, vy_sample))
+
         v_satisfying_constraints = self.check_constraints(v_sample, Amat, bvec)
+
         # Objective function
         size = np.shape(v_satisfying_constraints)[1]
         diffs = v_satisfying_constraints - \
@@ -80,13 +100,11 @@ class RVO:
         v = np.linalg.norm(cmd_vel)
         return v ,theta
 
-
     def check_constraints(self,v_sample, Amat, bvec):
         length = np.shape(bvec)[0]
         for i in range(int(length/2)):
             v_sample = self.check_inside(v_sample, Amat[2*i:2*i+2, :], bvec[2*i:2*i+2])
         return v_sample
-
 
     def check_inside(self,v, Amat, bvec):
         v_out = []
@@ -94,7 +112,6 @@ class RVO:
             if not ((Amat @ v[:, i] < bvec).all()):
                 v_out.append(v[:, i])
         return np.array(v_out).T
-
 
     def create_constraints(self,translation, angle, side):
         origin = np.array([0, 0, 1])
@@ -106,16 +123,13 @@ class RVO:
 
         A = line[:2]
         b = -line[2]
-
         return A, b
-
 
     def translate_line(self,line, translation):
         matrix = np.eye(3)
         matrix[2, 0] = -1*translation[0]
         matrix[2, 1] = -1*translation[1]
         return matrix @ line
-
 
     def update_state(self,x, v):
         new_state = np.empty((4))
