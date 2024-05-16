@@ -29,8 +29,8 @@ def create_obstacles_from_img(image,sim_time, num_timesteps):
             obstacles = obst
         obstacles = np.dstack((obstacles, obst))
         cv2.circle(image, (x,y), s//2, (0,255,0), 2)
-    cv2.imshow("Detected Circles", image)
-    cv2.waitKey(500)
+    #cv2.imshow("Detected Circles", image)
+    #cv2.waitKey(500)
     return obstacles
 
 

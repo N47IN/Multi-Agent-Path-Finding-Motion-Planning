@@ -43,7 +43,7 @@ timestep = 10
 data = [20]
 timestep = int(robot.getBasicTimeStep())
 
-g_planner = RRT_star_planner("Binary_Mask.png",0.5)
+g_planner = RRT_star_planner("Binary_Mask.png",0.5,"/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/image1.png")
 comms = comms(agent1= agent1,agent2=agent2, Admin=admin)
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
@@ -63,8 +63,9 @@ def steer(data,v):
 def plan(position,goal):
     g_planner.setStart(position[0:2])
     g_planner.setGoal([ goal[0], goal[1]])
-    global_path = np.asarray(g_planner.RRT())
-    g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
+    print(position)
+    global_path, nodes = g_planner.RRT()
+    g_plan_smoothed = ccma.filter(np.asarray(global_path), cc_mode=False)
     return g_plan_smoothed
 
 def rnd(number, precision=4):
@@ -85,15 +86,15 @@ while robot.step(timestep) != -1:
     yaw = yaw[2]
     agent1 = comms.getAgent1()
     agent2 = comms.getAgent2()
-    print(agent2,agent1)
+    #print(agent2,agent1)
 
-    agent3 = [position[0],position[1],velocity/5, yaw]
+    agent3 = [position[0],position[1],velocity, yaw]
     broadcast(agent3)
     
     if admin.getQueueLength()>0 and path==False:
         goal = comms.getAdmin()[4:6]
-        print("current position Agent3 :",position[0:2])
-        print("goal Agent3 :",goal)
+        # print("current position Agent3 :",position[0:2])
+        # print("goal Agent3 :",goal)
         g_plan_smoothed = plan(position,goal)
         path = True
         Local = False
@@ -113,7 +114,7 @@ while robot.step(timestep) != -1:
                     velocity, steering_angle = rvo.simulate(agent3,agent1,agent2)
                 except: 
                     steer(velocity,steering_angle)
-                steer(steering_angle/4,velocity/4)
+                steer(steering_angle,velocity)
                 print(steering_angle,velocity)
                 print("Agent3 : RVO")
                 

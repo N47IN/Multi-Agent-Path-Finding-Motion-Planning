@@ -119,7 +119,8 @@ class RRT_star_planner:
 
     def generate_path(self, node):
         path = []
-        while node != None:
+        #print(node)
+        while node != None :
             path.append([node.x,node.y])
             node.update_cost()
             node = node.parent
@@ -131,7 +132,7 @@ class RRT_star_planner:
     def setGoal(self,goal):
         self.goal = goal
 
-    def RRT(self,mode = True,radius = 0.1, goal_bias = 0.05, runTime = 2):
+    def RRT(self,mode = False,radius = 0.1, goal_bias = 0.05, runTime = 2):
         self.radius = radius
         self.fast_goal = False
         self.node_list = [] 
@@ -170,14 +171,15 @@ class RRT_star_planner:
                 continue
             else:
                 self.node_list.append(child)
-                print(child.x,child.y)
+                # print(len(self.node_list))
                 if goal_sampled:
                     self.goal_found = self.goal_check(child)  #to check if the goal is less than 'radius' away. 
                     if self.fast_goal:    #Check if no obstacle to goal, then shoot into goal. 
                         if not(self.collision_check(self.goal[0], self.goal[1], child.x, child.y)):
                             self.goal_found = True
             
-            if self.goal_found:
+            if self.goal_found: 
+                print("found", len(self.node_list))
                 if self.goal_flag:
                     found_time = time.time()
                     self.goal_flag = False
@@ -196,10 +198,12 @@ class RRT_star_planner:
                             min_path = self.node_list[i].cost
                             min_index = i
                     goal_node = Node(self.goal[0], self.goal[1], self.node_list[min_index])
+                    goal_node.update_cost()
                 else:
                     _,parent_index = tree.query(self.goal)
                     goal_node = Node(self.goal[0], self.goal[1], self.node_list[parent_index])
-                goal_node.update_cost()
+                    goal_node.update_cost()
+                
                 path = self.generate_path(goal_node)
                 # self.displayPath(path)
                 path_length = goal_node.cost

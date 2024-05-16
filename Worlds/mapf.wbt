@@ -8,7 +8,6 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/robotis/turtlebot/protos/TurtleBot3Burger.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/adept/pioneer3/protos/Pioneer3at.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/robotis/protos/RobotisLds01.proto"
 
 WorldInfo {
   info [
@@ -20,8 +19,8 @@ WorldInfo {
   gpsReference 5 5 0
 }
 Viewpoint {
-  orientation 0.16554240167569761 -0.9713371076496381 -0.17058703511778778 4.713308475040323
-  position -0.19075400544328702 -0.8988206102586851 21.09148714161121
+  orientation 0.32603298564433353 -0.8073496116778133 -0.49182222072159965 4.908236277258162
+  position -5.606062893016843 -6.090023796173195 15.831689930771548
   follow "Agent1"
   followType "None"
   followSmoothness 0
@@ -69,12 +68,13 @@ RectangleArena {
 WoodenBox {
   translation 0.821339 4.12919 0.3
   rotation 0 0 -1 0.19635
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 2.52518 0.751323 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(4)"
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 2.91149 2.96145 0.3
@@ -95,14 +95,6 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 Pioneer3at {
-  hidden translation_5 -0.1331 0.197 0.11
-  hidden rotation_5 0.5773516025653043 -0.5773476025680574 -0.5773516024262784 2.094405000139025
-  hidden translation_6 -0.1331 -0.197 0.11
-  hidden rotation_6 0.5773516025653467 -0.5773476025680991 -0.5773516024261942 2.0944050001391505
-  hidden translation_7 0.1331 0.197 0.11
-  hidden rotation_7 0.5773516028559978 -0.5773476028587455 -0.5773516018448988 2.094405001011091
-  hidden translation_8 0.1331 -0.197 0.11
-  hidden rotation_8 0.577351602856017 -0.5773476028587649 -0.5773516018448602 2.0944050010111486
   translation -4.630000027617827 4.669999981385849 -0.00038249699080494803
   rotation -0.0607690287478222 0.9981518523129443 6.978025917652947e-05 7.867537936402818e-06
   name "Admin"
@@ -125,16 +117,16 @@ Pioneer3at {
   ]
 }
 WoodenBox {
-  translation -1.60604 0.480567 0.25
+  translation -1.62665 0.489238 0.25
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(5)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -1.64202 1.02939 0.3
+  translation -1.63204 1.03003 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(21)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation -2.93057 1.72669 0.3
@@ -155,10 +147,10 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 WoodenBox {
-  translation -2.10504 0.447867 0.3
+  translation -2.0751 0.449829 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(15)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation -3.7018 0.343227 0.27
@@ -167,40 +159,40 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 WoodenBox {
-  translation -3.39336 -2.83341 0.3
+  translation -3.3235 -2.82886 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(17)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -3.43218 -2.39494 0.3
+  translation -3.3684 -2.4509 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(42)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -2.90433 -2.80132 0.3
+  translation -2.87439 -2.79937 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(18)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -2.39536 -2.76791 0.3
+  translation -2.4253 -2.76986 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(19)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -2.24259 -4.18104 0.3
+  translation -2.20267 -4.17843 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(40)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -1.73361 -4.14766 0.3
+  translation -1.75357 -4.14896 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(41)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation -1.50203 -1.10604 0.25
@@ -209,94 +201,94 @@ WoodenBox {
   size 0.5 0.5 0.5
 }
 WoodenBox {
-  translation -0.189439 -0.949837 0.3
+  translation -0.15754 -0.977812 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(2)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -0.156739 -1.44873 0.3
+  translation -0.138743 -1.41749 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(7)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation 0.320921 -1.39731 0.3
+  translation 0.311596 -1.40794 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(9)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation 0.48822 -2.87955 0.3
+  translation 0.517503 -2.86762 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(10)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -0.000730782 -2.91164 0.3
+  translation 0.078444 -2.89646 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(20)"
-  size 0.5 0.5 0.6
+  size 0.45 0.45 0.44
 }
 WoodenBox {
-  translation 0.986522 -2.83676 0.3
+  translation 0.956585 -2.83871 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(22)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation 0.67763 1.70932 0.3
+  translation 0.652723 1.65659 0.3
   rotation 0 0 1 0.589044
   name "wooden box(23)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation 0.272971 1.451 0.3
+  translation 0.292436 1.40389 0.3
   rotation 0 0 1 0.589044
   name "wooden box(24)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation -0.117818 1.18992 0.3
+  translation -0.0817239 1.15393 0.3
   rotation 0 0 1 0.589044
   name "wooden box(25)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation 0.154405 0.78249 0.3
+  translation 0.16272 0.788046 0.3
   rotation 0 0 1 0.589044
   name "wooden box(26)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation 0.415521 0.3917 0.3
+  translation 0.407168 0.422201 0.3
   rotation 0 0 1 0.589044
   name "wooden box(27)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation -1.70122 3.55952 0.23
   rotation 0 0 1 0.589044
   name "wooden box(28)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation -0.972766 3.60729 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(33)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation -0.972766 3.60729 0.3
   rotation 0 0 -1 -0.06544530717958619
   name "wooden box(43)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 3.90598 0.871946 0.3
   rotation 0 0 1 -0.9817553071795864
   name "wooden box(8)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 2.21478 -2.23057 0.3
@@ -332,49 +324,47 @@ WoodenBox {
   translation 3.06278 -4.02106 0.3
   rotation 0 0 1 -0.9817553071795864
   name "wooden box(36)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 4.35138 -3.15981 0.3
   rotation 0 0 1 -0.9817553071795864
   name "wooden box(37)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 4.18905 -0.684977 0.3
   rotation 0 0 1 0.0654422
   name "wooden box(38)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
-  translation 4.22046 -1.16397 0.3
+  translation 4.21851 -1.13403 0.3
   rotation 0 0 1 0.0654422
   name "wooden box(39)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 0.821339 4.12919 0.3
   rotation 0 0 -1 0.19635
   name "wooden box(3)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 WoodenBox {
   translation 1.70404 3.95367 0.3
   rotation 0 0 1 0.0654494
   name "wooden box(1)"
-  size 0.5 0.5 0.5
+  size 0.45 0.45 0.45
 }
 TurtleBot3Burger {
-  hidden translation_14 0 -0.08 0.033
-  hidden translation_15 0 0.08 0.033
-  hidden translation_16 -0.081 0 0.004
-  hidden rotation_16 -0.9944305011774959 0.10539434081950369 0.00010607118568246588 4.9286139725908614e-05
-  translation -1.0413300000590413 -3.558700000565817 -4.683016029582987e-05
+  translation 0.794535 -0.428083 -0.00245695
   rotation -0.0003655032100265136 -0.00032880150332072655 -0.9999998791484802 1.6720600156276426
   name "Agent1"
   controller "<extern>"
   extensionSlot [
-    RobotisLds01 {
+    Lidar {
+      fieldOfView 6.2
+      maxRange 0.4
     }
     InertialUnit {
     }
@@ -397,16 +387,14 @@ TurtleBot3Burger {
   ]
 }
 TurtleBot3Burger {
-  hidden translation_14 0 -0.08 0.033
-  hidden translation_15 0 0.08 0.033
-  hidden translation_16 -0.081 0 0.004
-  hidden rotation_16 0.9972230172228456 0.07446912996547046 -0.0007762751768938311 3.74587570314071e-05
-  translation -1.0982699999075833 -2.177059998875357 -5.387186759253648e-05
+  translation -0.838265 2.25294 0.00317057
   rotation 0.0003632225605515907 -0.0003645489491894581 0.9999998675867089 1.5707884826532157
   name "Agent2"
   controller "<extern>"
   extensionSlot [
-    RobotisLds01 {
+    Lidar {
+      fieldOfView 6.2
+      maxRange 0.4
     }
     InertialUnit {
     }
@@ -429,17 +417,14 @@ TurtleBot3Burger {
   ]
 }
 TurtleBot3Burger {
-  hidden translation_14 0 -0.08 0.033
-  hidden rotation_14 0 -1 0 1.5707960000442993
-  hidden translation_15 0 0.08 0.033
-  hidden translation_16 -0.081 0 0.004
-  hidden rotation_16 -0.9705311153692762 -0.2409758131777384 -0.00010753323383725953 4.898225427898992e-05
-  translation 2.2513800003471607 -4.2201799973618135 -4.001288076429382e-05
+  translation 1.70211 -1.89428 -0.00178546
   rotation -0.000366148689461857 -0.0004606745856999 -0.9999998268570166 1.3389432158916803
   name "Agent3"
   controller "<extern>"
   extensionSlot [
-    RobotisLds01 {
+    Lidar {
+      fieldOfView 6.2
+      maxRange 0.4
     }
     InertialUnit {
     }

@@ -33,7 +33,7 @@ agent2.enable(10)
 agent3.enable(10)
 
 comms = comms(agent2= agent2,agent3=agent3, Admin=admin)
-g_planner = RRT_star_planner("Binary_Mask.png",0.5)
+g_planner = RRT_star_planner("Binary_Mask.png",0.5,"/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/image1.png")
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
 right_motor.setPosition(float('inf'))
@@ -80,7 +80,7 @@ while robot.step(timestep) != -1:
     position = gps.getValues()
     yaw = Yaw.getRollPitchYaw()
     yaw = yaw[2]
-    agent1 = [position[0],position[1],velocity/5,yaw]
+    agent1 = [position[0],position[1],velocity,yaw]
     broadcast(agent1)
     agent2 = comms.getAgent2()
     agent3 = comms.getAgent3()
@@ -110,7 +110,7 @@ while robot.step(timestep) != -1:
                     velocity, steering_angle = rvo.simulate(agent1,agent2,agent3)
                 except: 
                     steer(velocity,steering_angle)
-                steer(steering_angle/5,velocity/5)
+                steer(steering_angle,velocity)
                 print(steering_angle,velocity)
                 print("Agent1 RVO")
                 

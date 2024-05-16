@@ -22,12 +22,16 @@ class RVO:
         self.rob = rob
         image = cv2.imread("/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/Binary_Mask.png")
         
-        #self.obstacles = create_obstacles_from_img(image,SIM_TIME, NUMBER_OF_TIMESTEPS)
-        #self.obstacles = np.dstack((agent_obstacles,static_obstacles))        
-    def simulate(self,rob,obs1,obs2,filename="MAPF"):
+    
+             
+    def simulate(self,rob,obs1,obs2,goal,filename="MAPF"):
+        image = cv2.imread("/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/Binary_Mask.png")
+        #k = create_obstacles_from_img(image,SIM_TIME, NUMBER_OF_TIMESTEPS)
         self.obstacles = create_obstacle(rob,obs1,obs2,SIM_TIME, NUMBER_OF_TIMESTEPS)
+        #print("obstacles are of the form", self.obstacles,"while", k)
+        #self.obstacles = np.dstack((self.obstacles,k)) 
         start = np.array(rob)
-        goal = self.goal
+        self.goal = goal
         robot_state = np.asarray([rob[0],rob[1],rob[2]*math.cos(rob[3]),rob[2]*math.sin(rob[3])])
         robot_state_history = np.empty((4, NUMBER_OF_TIMESTEPS))
         v_desired = compute_desired_velocity(robot_state, goal, ROBOT_RADIUS, VMAX)
@@ -42,7 +46,7 @@ class RVO:
     def compute_velocity(self,robot, obstacles, v_desired):
         pA = robot[:2]
         vA = robot[-2:]
-        print(np.shape(obstacles))
+        #print(np.shape(obstacles))
         # Compute the constraints for each velocity obstacles
         number_of_obstacles = np.shape(obstacles)[1]
         Amat = np.empty((number_of_obstacles * 2, 2))
