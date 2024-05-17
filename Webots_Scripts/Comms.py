@@ -8,10 +8,11 @@ def rnd(number, precision=4):
         return np.round(number, precision)
     
 class comms():
-    def __init__(self,agent1=None,agent2=None,agent3=None,Admin=None):
+    def __init__(self,agent1=None,agent2=None,agent3=None,Admin=None, dyna =None):
         self.agent1 = agent1
         self.agent2 = agent2
         self.agent3 = agent3
+        self.dyna = dyna
         self.Admin = Admin
         
     def getAgent2(self):
@@ -20,6 +21,14 @@ class comms():
             coord3 = rnd(np.frombuffer(message2, dtype=np.float64)) 
             #print("Agent2 :",coord3)
             self.agent2.nextPacket()
+            return coord3
+        
+    def getDyna(self):
+        if self.dyna.getQueueLength()>0:
+            message2 = self.dyna.getBytes()
+            coord3 = rnd(np.frombuffer(message2, dtype=np.float64)) 
+            #print("Agent2 :",coord3)
+            self.dyna.nextPacket()
             return coord3
             
     def getAgent1(self):

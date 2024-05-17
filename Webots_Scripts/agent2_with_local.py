@@ -31,13 +31,15 @@ admin.enable(10)
 #emitter.enable(10)
 agent1.enable(10)
 agent3.enable(10)
-
-comms = comms(agent1= agent1,agent3=agent3, Admin=admin)
+dyna = robot.getDevice("receiver")
+dyna.enable(10)
+comms = comms(agent1= agent1,agent3=agent3, Admin=admin, dyna=dyna)
 g_planner = RRT_star_planner("Binary_Mask.png",0.5,"/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/image1.png")
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
 right_motor.setPosition(float('inf'))
 left_motor.setPosition(float('inf'))
+
 right_motor.setVelocity(0.0)
 left_motor.setVelocity(0.0)
 timestep = 10
@@ -133,6 +135,8 @@ while robot.step(timestep) != -1:
         g_plan_smoothed = ccma.filter(np.asarray(global_path), cc_mode=False)
         path = True
         rvo = RVO(goal,agent2,agent1,agent3)
+        dynamic = comms.getDyna()
+        print("dynaaaa", dynamic)
 
         #print(g_plan)
         

@@ -16,6 +16,8 @@ keyboard= Keyboard()
 w_ma = 4
 w_cc = 2
 
+dyna = robot.getDevice("receiver")
+dyna.enable(10)
 Yaw = robot.getDevice("inertial unit")
 right_motor = robot.getDevice("right wheel motor")
 left_motor = robot.getDevice("left wheel motor")
@@ -32,7 +34,7 @@ admin.enable(10)
 agent1.enable(10)
 agent2.enable(10)
 
-comms = comms(agent1= agent1,agent2=agent2, Admin=admin)
+comms = comms(agent1= agent1,agent2=agent2, Admin=admin, dyna=dyna)
 g_planner = RRT_star_planner("Binary_Mask.png",0.5,"/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/image1.png")
 ccma = CCMA(w_ma, w_cc, distrib="hanning")
 
@@ -116,6 +118,8 @@ while robot.step(timestep) != -1:
     broadcast(agent3)
     agent1 = comms.getAgent1()
     agent2 = comms.getAgent2()
+    dynamic = comms.getDyna()
+    print("dynaaaa", dynamic)
 
 
     #print(position)
