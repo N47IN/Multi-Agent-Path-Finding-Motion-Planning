@@ -1,4 +1,4 @@
-- Install Webots
+- Install Webots and clone the Repo
 - Open the mapf.wbt world from the Worlds directory
 - Launch the 4 controllers as extern controllers by adding the following aliases to bashrc :
 export WEBOTS_HOME=/usr/local/webots
