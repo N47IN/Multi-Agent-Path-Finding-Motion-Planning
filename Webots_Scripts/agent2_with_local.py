@@ -140,7 +140,7 @@ while robot.step(timestep) != -1:
 
         #print(g_plan)
         
-    window_size = 1.2
+    window_size = 0
     local_done = True
     local_active = False
     if path == True:
@@ -162,6 +162,7 @@ while robot.step(timestep) != -1:
                     local_goal = getLocalGoal(tree,position,window_size,nodes)
                     print("local goal is", local_goal)
                     new_global_path = g_planner.generate_path(local_goal)
+                    
                     #g_plan_smoothed = ccma.filter(np.asarray(new_global_path), cc_mode=False)
 
                 if rvo_bots:

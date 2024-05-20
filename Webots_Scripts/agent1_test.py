@@ -1,5 +1,5 @@
 # Talks at channel 1
-
+import pandas as pd
 from multiprocessing.spawn import import_main_path
 from turtle import pos
 from controller import Robot, GPS, Motor, Keyboard
@@ -9,6 +9,7 @@ import numpy as np
 from Comms import comms
 from ccma import CCMA
 import math
+import time
 from pure_pursuit import PP
 
 # create the Robot instance.
@@ -86,17 +87,28 @@ while robot.step(timestep) != -1:
         global_path = np.asarray(g_planner.RRT(mode = False))
         print(global_path)
         g_plan_smoothed = ccma.filter(global_path, cc_mode=False)
+        df = pd.DataFrame(g_plan_smoothed)
+        df.to_csv('path.csv')
         path = True
         tracker = PP(g_plan_smoothed,yaw)
-        #print(g_plan)
+        start = time.time
+        velocityy = []
+        steerr = []
+        timee = []
         
     if path == True:
         if np.linalg.norm(position[0:2] - goal) > 0.05 :
             time2 = robot.getTime() - start_time
 
             try :
+                velocityy.append(velocity)
+                timee.append(time.time - start_time)
+                steerr.append(steering_angle)
                 velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
                 steer(steering_angle,velocity)
             except:
+                c = np.asarray([velocityy,steerr,timee])
+                df = pd.DataFrame(g_plan_smoothed)
+                df.to_csv('path.csv')
                 steer(0,0)
     

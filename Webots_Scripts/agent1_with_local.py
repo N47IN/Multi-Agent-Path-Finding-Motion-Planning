@@ -1,5 +1,8 @@
 # Talks at channel 1
 from turtle import pos
+import pandas as pd
+import csv
+import time as time
 from controller import Robot, GPS, Motor, Keyboard
 from controller import InertialUnit
 from velocity_obstacle_webots import RVO
@@ -110,6 +113,7 @@ start_time = robot.getTime()
 v = 0
 time = 0
 velocity = 0
+start_time = robot.getTime()
 
 while robot.step(timestep) != -1:
     position = gps.getValues()
@@ -134,14 +138,19 @@ while robot.step(timestep) != -1:
         print("planning global")
         global_path, nodes = g_planner.RRT()
         global_path = np.asarray(global_path)
-        print(global_path)
+        df = pd.DataFrame(global_path)
         g_plan_smoothed = ccma.filter(np.asarray(global_path), cc_mode=False)
+        data = list(csv.reader(open("/home/navin/catkin_ws/src/Multi-Agent-Path-Finding-Motion-Planning/Webots_Scripts/path.csv")))
+        g_plan_smoothed= np.asfarray(data)
         path = True
         rvo = RVO(goal,agent1,agent2,agent3)
+        velocityy = []
+        steerr = []
+        timee = []
 
         #print(g_plan)
         
-    window_size = 1.2
+    window_size = 0
     local_done = True
     local_active = False
     if path == True:
@@ -163,6 +172,7 @@ while robot.step(timestep) != -1:
                     local_goal = getLocalGoal(tree,position,window_size,nodes)
                     print("local goal is", local_goal)
                     new_global_path = g_planner.generate_path(local_goal)
+                    
                     #g_plan_smoothed = ccma.filter(np.asarray(new_global_path), cc_mode=False)
 
                 if rvo_bots:
@@ -193,9 +203,16 @@ while robot.step(timestep) != -1:
                 local_done = False 
 
                 try :
+                    
                     velocity, steering_angle, time = tracker.execute(xpos = position[0], ypos = position[1], yaw = yaw, v = velocity ,time = time)
+                    velocityy.append(velocity)
+                    timee.append(robot.getTime() - start_time)
+                    steerr.append(steering_angle)
                     steer(steering_angle,velocity)
 
                 except:
+                    c = np.asarray([velocityy,steerr,timee]).T
+                    df = pd.DataFrame(c)
+                    df.to_csv('rrts_wosmoothed_global.csv')
                     steer(0,0)
 

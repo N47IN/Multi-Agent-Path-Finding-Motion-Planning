@@ -20,6 +20,7 @@ agent3.enable(10)
 
 iteration = 0
 goals = np.asarray([[3,4],[2,4],[1.5,4.5]])
+#goals = np.asarray([[3,9],[2,4],[4,9.5]])
 
 def getCostMatrix(goals,coords):
     cost = np.zeros((len(goals),len(goals)))

@@ -140,7 +140,7 @@ while robot.step(timestep) != -1:
 
         #print(g_plan)
         
-    window_size = 1.2
+    window_size = 0
     local_done = True
     local_active = False
     if path == True:
